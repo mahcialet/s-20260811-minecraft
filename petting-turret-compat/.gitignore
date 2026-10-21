@@ -1,0 +1,17 @@
+# Gradle caches and build output
+/.gradle/
+/build/
+
+# NeoForge development and compatibility test servers
+/run/
+/run-compat-tests/
+/runs/
+
+# Local IDE metadata and output
+.idea/
+*.iml
+/.classpath
+/.project
+/.settings/
+/bin/
+/out/
