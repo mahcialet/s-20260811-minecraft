@@ -3,6 +3,15 @@ plugins {
     id 'net.neoforged.moddev' version '2.0.148'
 }
 group = 'dev.marmite.oreslimescompat'
+def observeCows = providers.gradleProperty('observeCows').map { it.toBoolean() }.getOrElse(false)
+def creatureInventory = providers.gradleProperty('creatureInventory').map { it.toBoolean() }.getOrElse(false)
+def creatureCoverage = providers.gradleProperty('creatureCoverage').map { it.toBoolean() }.getOrElse(false)
+def coverageTarget = providers.gradleProperty('coverageTarget').getOrElse('')
+def compactCoverage = providers.gradleProperty('compactCoverage').map { it.toBoolean() }.getOrElse(false)
+if ((coverageTarget && !creatureCoverage) || (compactCoverage && (!creatureCoverage || !coverageTarget))) {
+    throw new GradleException('coverageTarget requires creatureCoverage; compactCoverage also requires a target')
+}
+def statisticsDirectory = creatureCoverage ? (compactCoverage ? 'run-creature-low-floor' : coverageTarget ? 'run-creature-followup' : 'run-creature-coverage') : creatureInventory ? 'run-creature-inventory' : observeCows ? 'run-cows' : 'run-statistics'
 version = '1.0.0'
 base { archivesName = 'ore-slimes-compat' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
@@ -21,6 +30,19 @@ neoForge {
             server()
             gameDirectory = project.file('run-tests')
             programArgument '--nogui'
+            sourceSet = sourceSets.test
+            loadedMods = [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
+        }
+        compatStatisticsServer {
+            server()
+            gameDirectory = project.file(statisticsDirectory)
+            programArgument '--nogui'
+            systemProperty 'compat.statistics', 'true'
+            systemProperty 'compat.observeCows', observeCows.toString()
+            systemProperty 'compat.creatureInventory', creatureInventory.toString()
+            systemProperty 'compat.creatureCoverage', creatureCoverage.toString()
+            systemProperty 'compat.coverageTarget', coverageTarget
+            systemProperty 'compat.compactCoverage', compactCoverage.toString()
             sourceSet = sourceSets.test
             loadedMods = [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
         }
@@ -54,6 +76,40 @@ tasks.named('runCompatTestServer').configure {
         def result = file('run-tests/compat-test-result.txt')
         if (!result.isFile() || !(result.text.trim() ==~ /PASS assertions=[1-9][0-9]*/)) {
             throw new GradleException('Runtime tests failed; see run-tests/logs/latest.log')
+        }
+    }
+}
+
+tasks.register('prepareCompatStatistics') {
+    doLast {
+        def directory = file(statisticsDirectory)
+        directory.mkdirs()
+        delete new File(directory, 'statistics-result.txt')
+        new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+view-distance=8
+simulation-distance=8
+pause-when-empty-seconds=0
+spawn-protection=0
+level-seed=384731
+level-type=minecraft:flat
+generator-settings={"biome":"minecraft:plains","layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":127},{"block":"minecraft:grass_block","height":1}],"structures":{}}
+'''+ 'level-name=world-' + UUID.randomUUID() + '\n'
+        if (compactCoverage) {
+            def properties = new File(directory, 'server.properties')
+            properties.text = properties.text.replace(',{"block":"minecraft:dirt","height":127}', '')
+        }
+    }
+}
+tasks.named('runCompatStatisticsServer').configure {
+    dependsOn 'prepareCompatStatistics'
+    doLast {
+        def result = file("${statisticsDirectory}/statistics-result.txt")
+        if (!result.isFile() || result.text.trim() != 'COMPLETE') {
+            throw new GradleException("Statistics failed; see ${statisticsDirectory}/logs/latest.log")
         }
     }
 }

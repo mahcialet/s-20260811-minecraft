@@ -38,6 +38,14 @@ public final class CompatRuntimeTests {
     private static int assertions;
 
     public CompatRuntimeTests() {
+        if (Boolean.getBoolean("compat.creatureCoverage")) {
+            new CreatureCoverage();
+            return;
+        }
+        if (Boolean.getBoolean("compat.statistics")) {
+            new CompatStatistics();
+            return;
+        }
         NeoForge.EVENT_BUS.addListener(this::started);
     }
 

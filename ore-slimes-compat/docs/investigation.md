@@ -2,10 +2,10 @@
 
 対象は `../mods/oreslimes-1.0.108.jar`。SHA-256 は
 `d53fd2b38cc485714236f4d8c16b3ba6b6b547af268d0c9284034d9c02298bd0`。
-jar を変更せず JDK の `javap -p -c` で確認した。Minecraft 26.1.2 / NeoForge 26.1.2.71 のローカルキャッシュにある patched sources で追加経路も照合した。
+JDK の `javap -p -c` で jar を読み取り、元の jar を維持したまま確認した。Minecraft 26.1.2 / NeoForge 26.1.2.71 のローカルキャッシュにある patched sources で追加経路も照合した。
 
 第1〜12節では元実装の観察結果と、そこから得た互換版の設計上の制約を記録する。
-元実装の数値と互換版の初期値は区別して読む必要がある。採用した変更とその理由は
+以下の数値を読む際は、元実装の値と互換版の初期値を区別する必要がある。採用した変更とその理由は
 [設計判断](design.md) にまとめている。実サーバー試験で追加判明した通常 Slime の制約は、
 第12節の後に別節として記載する。
 
@@ -15,7 +15,7 @@ jar を変更せず JDK の `javap -p -c` で確認した。Minecraft 26.1.2 / N
 
 ## 2. MobCategory
 
-上記 helper で登録する Ore Slime は `CREATURE`。通常 Slime の `MONSTER` とは異なる。Rabbit / Cow / Sheep / Pig と同じ category である。互換 Mod はこの登録・category を変更しない。
+上記 helper で登録する Ore Slime は `CREATURE`。通常 Slime の `MONSTER` とは異なる。Rabbit / Cow / Sheep / Pig と同じ category である。互換 Mod はこの登録・category を維持する。
 
 ## 3. 独自 spawn flow
 
@@ -46,7 +46,7 @@ spawn は **200 server ticks**、calm は **10 server ticks**。counter は leve
 
 ## 5. Nearby cap
 
-**8**。OreSlimeEntity とその subclass のみ数える。Rabbit 等や vanilla Slime の数は参照しない。これは spawn 前の local gate であり既存個体を削除する上限ではない。
+**8**。数える対象は OreSlimeEntity とその subclass のみで、Rabbit 等や vanilla Slime は対象外。spawn 前の local gate として使い、既存個体を削除する処理は伴わない。
 
 ## 6. Chance
 
@@ -70,13 +70,13 @@ Ore helper は最大 **8 回**。最初の true で打ち切る。Vanilla helper
 
 Ore nearby cap と Ore chance の gate を通った player に対してのみ、Peaceful 以外で **14%**。Ore spawn の成否は条件になっていない。surface helper を共用し、床を grass block / dirt / stone / deepslate / sand / red sand に限定する。slime chunk、標準 swamp/slime 自然湧き条件、mob cap は調べない。
 
-`new Slime(EntityType.SLIME, level)`、`setSize(1 + nextInt(3), true)`、位置設定、collision 判定、`addFreshEntity` の順。size は 1 / 2 / 3。互換版はこの helper の呼び出しだけをデフォルトで停止できる。標準の Slime spawn と calm 処理を停止する必要はない。
+`new Slime(EntityType.SLIME, level)`、`setSize(1 + nextInt(3), true)`、位置設定、collision 判定、`addFreshEntity` の順。size は 1 / 2 / 3。互換版は標準の Slime spawn と calm 処理を維持したまま、この helper の呼び出しだけをデフォルトで停止できる。
 
 ## 10. Multiplayer
 
 同 level の全非 spectator player を順番に処理し、coverage/chunk の重複排除はない。同じ AABB に入る追加済み個体は後続 player の count に反映されるため、完全に重なる位置で上限が必ず 8 × player 数になるわけではない。ただし chance の試行回数は増え、離れた AABB の非共有領域では別々の上限まで増える。
 
-単に helper 成功後に同 tick の二重追加を止めるだけでは、失敗した player の次に再抽選できて chance が人数分増える。近隣 player の coverage を **chance 判定前** にまとめる必要がある。全 player の calm 呼び出しは別途維持する。
+helper が成功した後に同 tick の二重追加を止めるだけでは、先の player で失敗した場合に、次の player で再抽選できる。そのため chance の試行回数が人数分増える。これを抑えるには、近隣 player の coverage を **chance 判定前** にまとめる必要がある。全 player の calm 呼び出しは別途維持する。
 
 ## 11. 標準 mob cap
 
@@ -84,7 +84,9 @@ Ore nearby cap と Ore chance の gate を通った player に対してのみ、
 
 一方、標準 `NaturalSpawner.createState` は loaded entity を分類し、persistence-required / custom-persistent Mob を除外したうえで category ごとの個体数へ加算する。従って独自経路で追加した Ore Slime も、標準 count の対象になる限り CREATURE population を圧迫する。追加経路が cap を守ることと、追加後に cap へ数えられることは別である。
 
-26.1.2 の `ServerChunkCache.getLastSpawnState()` は public / nullable / `@VisibleForDebug`。`SpawnState.getMobCategoryCounts()` と `getSpawnableChunkCount()` も public。global gate 本体は private であり、式は `count < category.getMaxInstancesPerChunk() * spawnableChunkCount / 289`。公開 snapshot を読み、同じ snapshot 後の独自追加成功数を加味する保守的な gate は可能。snapshot が null の扱いを明示し、snapshot を書き換えないこと。これは標準 local cap・spawn potential の完全な再実装ではない。version 更新時にはこの式と snapshot 更新時点を再確認する。
+26.1.2 の `ServerChunkCache.getLastSpawnState()` は public / nullable / `@VisibleForDebug`。`SpawnState.getMobCategoryCounts()` と `getSpawnableChunkCount()` も public。global gate 本体は private であり、式は `count < category.getMaxInstancesPerChunk() * spawnableChunkCount / 289`。
+
+公開 snapshot を読み、同じ snapshot 後の独自追加成功数を加味する保守的な gate は可能。ただし、これは標準 local cap・spawn potential の完全な再実装ではない。実装では snapshot を読み取り専用で扱い、null の場合の扱いを明示すること。version 更新時にはこの式と snapshot 更新時点を再確認する。
 
 ## 12. Mixin なしの介入点
 
@@ -94,7 +96,7 @@ Ore nearby cap と Ore chance の gate を通った player に対してのみ、
 
 ただし `ServerLevel.addFreshEntity` → `addEntity` → `PersistentEntitySectionManager.addNewEntity` → `addEntity` では cancellable **EntityJoinLevelEvent** が発火する。従って「event が全くない」は誤り。ただしこの event に独自 spawner 由来であることを識別する情報はなく、自然湧き・spawn egg・他 Mod の追加と安全に区別できない。また interval / 探索回数を制御できず、生成後の reject にとどまる。stack trace による判別や全 Ore Slime の一律 reject は採用しない。
 
-対象クラス 1 個に限定した Mixin で scheduling と位置選択を変更し、upstream の spawn helpers と calm helper を維持する方針とする。entity / AI / drops / recipes / category のクラスへ Mixin を適用しない。
+対象クラス 1 個に限定した Mixin で scheduling と位置選択を変更し、upstream の spawn helpers と calm helper を維持する方針とする。entity / AI / drops / recipes / category のクラスは Mixin の対象外とする。
 
 ## 実サーバー試験で判明した通常 Slime の追加制約
 
@@ -102,10 +104,10 @@ Ore nearby cap と Ore chance の gate を通った player に対してのみ、
 `neoforge:remove_spawns` で `#oreslimes:ore_slime_spawn_biomes` から `minecraft:slime` を削除する。
 対象 biome tag には `#c:is_overworld` と plains / sunflower_plains / swamp / mangrove_swamp が含まれる。
 従って独自 vanilla injection を止めるだけでは Overworld の標準 Slime 自然湧きは復活しない。
-実際、Slime の placement rule が通る slime chunk でも、biome list に Slime がなく
-NaturalSpawner の試験が失敗した。compat は当該削除 modifier だけを公開データ機構の
+実際、Slime の placement rule が通る slime chunk でも、biome list に Slime がないため
+NaturalSpawner の試験が失敗した。この制約に対し、compat は当該削除 modifier だけを公開データ機構の
 `neoforge:remove_spawns`（`biomes: []`） で上書きし、標準の spawn list・条件を使用可能にする。
-Ore Slime を追加する別の `add_ore_slime_spawns.json` は変更しない。
+Ore Slime の追加には、別の `add_ore_slime_spawns.json` をそのまま使用する。
 
 ## 再現用の読み取りコマンド
 
@@ -119,4 +121,4 @@ rtk proxy javap -p -c -classpath ../mods/oreslimes-1.0.108.jar com.jeremiah.ores
 
 NeoForge sources の照合対象は `EntityJoinLevelEvent.java` / `MobSpawnEvent.java`、patched Minecraft sources は `NaturalSpawner.java` / `ServerChunkCache.java` / `ServerLevel.java` / `PersistentEntitySectionManager.java`。
 第1〜12節の根拠は静的解析であり、追加制約の節では実サーバー上の制御試験も扱っている。
-いずれも長時間自然湧き・複数 client での実測結果を意味しない。検証範囲は [検証手順](testing.md) を参照。
+ここで示した根拠が確認するのは、静的解析と制御試験の範囲である。長時間自然湧き・複数 client での実測結果とは区別し、検証範囲は [検証手順](testing.md) を参照。

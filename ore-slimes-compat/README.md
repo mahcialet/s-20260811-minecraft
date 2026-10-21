@@ -1,14 +1,15 @@
 # Ore Slimes Compat
 
-Minecraft **26.1.2 / NeoForge 26.1.2.71 / Java 25** 用の server-side 互換 Mod。
-対象は **`oreslimes-1.0.108.jar` のみ**です。Ore Slimes 本体 jar を変更・同梱しません。
-Slime Tech / Arcane Slime Tech / Slime Dimensions / Slimequests にはパッチしません。
+Minecraft **26.1.2 / NeoForge 26.1.2.71 / Java 25** 用のサーバー側互換 Mod です。
+**`oreslimes-1.0.108.jar` 専用**のパッチを、独立した jar として提供します。
+Ore Slimes 本体 jar は元のまま別途導入して使います。
+Slime Tech / Arcane Slime Tech / Slime Dimensions / Slimequests はパッチ対象外です。
 
-Ore Slime は Rabbit / Cow / Sheep / Pig と同じ `CREATURE` category です。
-独自 world spawner が標準 mob cap を確認せず直接 Entity を追加し、
+Ore Slime は Rabbit / Cow / Sheep / Pig と同じ `CREATURE` カテゴリに属します。
+Ore Slimes の独自スポーナー（world spawner）は、標準の個体数上限（mob cap）を確認せず直接 Entity を追加し、
 近傍の Ore Slime を高頻度で補充するため、通常の動物が自然湧きする余地を圧迫します。
-この Mod は独自スポーナーの頻度と補充数を抑えます。Ore Slime 自体は削除せず、
-category・AI・ドロップ・レシピ・能力値も変更しません。
+この Mod は独自スポーナーの頻度と補充数を抑えます。
+Ore Slime 自体と、category・AI・ドロップ・レシピ・能力値は元のまま維持します。
 
 また、1.0.108 は biome modifier で Overworld の通常 Slime を自然スポーン一覧から
 削除しています。独自追加を無効にしても通常 Slime が本来の条件で湧けるよう、
@@ -23,9 +24,13 @@ category・AI・ドロップ・レシピ・能力値も変更しません。
 ./gradlew runCompatTestServer
 ```
 
-生成物: `build/libs/ore-slimes-compat-1.0.0.jar`。
+通常のサーバー tick による個体数・出現時刻の収集には `./gradlew runCompatStatisticsServer` を使えます。
+条件と結果の読み方は [統計収集](docs/testing.md#通常サーバー-tick-による統計収集) を参照してください。
+CREATURE のうち、自然湧き対象の34種類は [網羅試験](docs/testing.md#自然湧き34種類の網羅試験) で確認できます。
+
+生成された `build/libs/ore-slimes-compat-1.0.0.jar` を、
 NeoForge サーバーの `mods/` に Ore Slimes 本体と一緒に配置します。
-シングルプレイの場合はクライアントの `mods/` に配置します（処理は統合サーバー側のみ）。
+シングルプレイの場合はクライアントの `mods/` に配置します。処理は統合サーバー側でのみ行います。
 専用サーバーへの接続クライアントには本 compat の導入は不要です。
 
 ## Server config
@@ -56,29 +61,33 @@ NeoForge サーバーの `mods/` に Ore Slimes 本体と一緒に配置しま�
 ルート項目 `debugSpawner = false` を true にすると、スキップ理由と追加成功位置を
 DEBUG ログへ出力します。ロガー側でも DEBUG の有効化が必要です。
 設定方法とログの確認先は [検証手順のログ設定](docs/testing.md#診断ログの有効化と確認先) を参照してください。
-通常設定ではこの Mod はスポーンログを出力しません。
+この Mod のスポーンログは診断を有効にしたときだけ出力します。
 
-距離の矛盾を安全に扱うため、実効 max distance は min 以上、実効 count radius は
-max distance 以上に補正します。設定ファイルそのものは書き換えません。
-探索は円環上の水平距離（ブロック座標への丸め誤差あり）で、未ロード chunk を生成しません。
+距離の設定に矛盾がある場合は、実効 max distance を min 以上に、
+実効 count radius を max distance 以上に補正します。設定ファイルの値はそのまま保持します。
+読み込み済みの chunk を対象に、円環上の水平距離で探索します。ブロック座標への丸め誤差があります。
 
 ## 挙動・制約
 
 独自スポーナーが各ディメンションのプレイヤーを一巡する処理を pass と呼びます。
 近接したプレイヤーについて、同一 pass 内で実効 count radius の2倍以内
-（初期値144 blocks、水平距離）の coverage を重複抽選しません。
-抽選失敗時も coverage を予約するので、2人で確率が単純に2倍になりません。
+（初期値144 blocks、水平距離）の coverage をまとめて抽選します。
+抽選に失敗した場合も、その coverage は抽選済みとして扱い、
+近接した2人による抽選確率の単純な倍増を防ぎます。
 代表はレベルの player list 順で選ぶため、近隣プレイヤーへの公平な持ち回りは保証しません。
-離れた集落は独立して処理します。移動や繁殖などもあるため、世界全体の3体上限ではありません。
+離れた集落は独立して処理します。3体という上限は近傍への独自補充に適用し、
+世界全体では移動や繁殖などによって個体数が変わります。
 
 標準スポーナーが集計した最新の `CREATURE` 個体数（census）を読み、
 そのディメンションの標準上限（global cap）が埋まっていれば補充しません。
 同じ pass で成功した追加も加算します。census 未作成時は補充を見送ります。
-Vanilla がプレイヤーごとに判定する上限（local cap）を再実装・置換するものではなく、他 Mod の同 tick の追加まで
-完全に追跡するものでもありません。
+標準の自然湧きでは、プレイヤーごとの上限（local cap）を引き続き Vanilla が判定します。
+本 Mod の独自補充は、上記の census と global cap に基づいて制御します。
+他 Mod による同 tick の追加は、追跡しきれない場合があります。
 
-既存の大量個体は消しません。自然湧きは地形・明るさ・プレイヤー距離・既存の家畜などにも
-左右されるため、導入だけで即座に Rabbit が湧くとは限りません。
+導入後も既存の個体はそのまま残り、以後の独自補充を抑えます。
+Rabbit などの自然湧きは、地形・明るさ・プレイヤー距離・既存の家畜などの条件に左右されます。
+導入によって即座に出現するとは限りません。
 Ore Slimes 本来の、通常 Slime の攻撃対象を条件に応じて解除する処理（temperament）は、
 10 ticks間隔でそのまま維持します。
 
