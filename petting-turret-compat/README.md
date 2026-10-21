@@ -1,6 +1,6 @@
 # Petting Turret Compat
 
-Petting でテイムした Mob を、所有者に関係なく LTX Industries のタレットのターゲットから除外する NeoForge mod です。Ionos / Arc、Atmos / Rocket、Noctis / Railgun に対応します。野生の同種 Mob は除外せず、既存のターゲット判定へ渡します。
+Petting でテイムした Mob を、所有者に関係なく LTX Industries のタレットのターゲットから除外する NeoForge mod です。Ionos / Arc、Atmos / Rocket、Noctis / Railgun に対応します。野生の同種 Mob は、既存のターゲット判定で扱います。
 
 ## 対象と依存関係
 
@@ -13,11 +13,11 @@ Petting でテイムした Mob を、所有者に関係なく LTX Industries の
 | Petting | 4.2.3-beta.3（必須・固定） |
 | Grimoire of Gaia 4 | 7.0.0-alpha.2（再現・検証用、互換modの必須依存ではない） |
 
-LTXI / Petting がない場合は依存関係エラーとしてロードを拒否します。内部メソッドに依存するため、別バージョンを黙って許可しません。Mixin は必須で、対象の構造が変わった場合は起動時に失敗します。
+LTXI / Petting がない場合は依存関係エラーとしてロードを拒否します。内部メソッドに依存するため、対応する依存modのバージョンを固定しています。Mixin は必須で、対象の構造が変わった場合は起動時に失敗します。
 
 ## ビルド
 
-Java 25 を選択して、このディレクトリで `./gradlew build` を実行します。指定の4つの依存jarを `../mods` に置いてください。
+Java 25 を選択し、次の4つの依存jarを `../mods` に配置してください。
 
 ```text
 ltxi-26.1.2-1.1.3.jar
@@ -26,24 +26,32 @@ petting-4.2.3-beta.3-neoforge-26.1.2.jar
 GrimoireOfGaia4-26.1.2-7.0.0-alpha.2.jar
 ```
 
-成果物は `build/libs/petting_turret_compat-1.0.0.jar` です。依存modは同梱しません。専用サーバーと各クライアントの `mods` に互換modと必要な依存modを配置してください。開発環境は `./gradlew runClient` / `./gradlew runServer` で起動できます。
+配置後、このディレクトリで `./gradlew build` を実行します。成果物は `build/libs/petting_turret_compat-1.0.0.jar` です。依存modは別途用意し、専用サーバーと各クライアントの `mods` に互換modと合わせて配置してください。開発環境は `./gradlew runClient` / `./gradlew runServer` で起動できます。
 
 ## 判定仕様
 
 - Petting がテイム済みと判定する Mob は、タレット設置者、ペット所有者、所有者のオンライン状態を問わず除外します。
 - 野生 Mob、プレイヤー、その他の Entity は LTXI の既存判定を維持します。
-- Vanilla の `OwnableEntity` / `TamableAnimal` に対する既存判定は置き換えません。
-- All Entities / Neutral Enemy / Hostile Only（Extermination を含む各設定）の意味は、Petting ペット以外について変更しません。
+- Vanilla の `OwnableEntity` / `TamableAnimal` に対する既存判定を維持します。
+- All Entities / Neutral Enemy / Hostile Only（Extermination を含む各設定）は、Petting ペット以外には既存の判定を適用します。
 - 取得済みのターゲットと待機キューも再評価します。キュー投入後のテイムは次のタレットサーバーtickで反映されます。
 
-指定 Petting jar には `PetHelper`、`PetData`、`PET_DATA` は存在しません。代わりに、Petting 自身の `GoldenWheatRightclickedProcedure.isCustomPet(Mob)` を Mixin Invoker で呼び出します。UUID や保存構造の独自実装はありません。LTXI 側は `TurretBlockEntity` の候補抽出、継続判定、待機キューの管理と、タレットロケットの範囲選択・追尾・着弾に介入します。[設計理由](docs/design.md)を参照してください。
+Atmos の範囲攻撃でもペットを除外します。発射後にテイムされた場合は次のロケットtickで追尾を解除し、着弾時にも直接・範囲ダメージを防ぎます。ロケット自体は残り、非ペットへの挙動は維持します。
+
+テイム判定は Petting 自身の処理に委譲します。使用する API と Mixin の介入箇所は [設計理由](docs/design.md) に記載しています。
 
 ## 制約と検証
 
-Atmos の範囲攻撃もペットを除外します。発射後にテイムされた場合は次のロケットtickで追尾を解除し、着弾時にも直接・範囲ダメージを防ぎます。ロケット自体を消去するわけではなく、非ペットへの挙動は維持します。他modのダメージ、手持ち武器、Petting のAI・combat mode、タレットの敵対分類は変更しません。Nine Tails に限定したブラックリストもありません。
+保護対象は Mob の種類ではなく、Petting のテイム判定で決まります。保護は LTX Industries のタレットによる対象選択と攻撃に適用し、他modのダメージ、手持ち武器、Petting のAI・combat mode、タレットの敵対分類は従来の動作を維持します。
 
-実機の確認項目と手順は [手動検証手順](docs/manual-test.md) に記載しています。コンパイル成功とマルチプレイでの実射確認は別の検証として扱ってください。
+### 自動テスト
 
-自動の実サーバー検証は `./gradlew runCompatTestServer` で実行します。専用の `run-compat-tests` にローカル検証ワールドを作成し、テスト後に停止します。終了コードだけでなく今回の `PASS assertions=N` を検査し、未実行や失敗はGradleタスクも失敗させます。テスト用modは配布jarに入りません。`build` だけではこの実行時検証は実施されません。
+`./gradlew runCompatTestServer` で実サーバー上の自動テストを実行します。`build` とは別に実行する必要があります。
+
+専用の `run-compat-tests` にローカル検証ワールドを作成し、テスト後にサーバーを停止します。Gradleタスクは終了コードに加えて今回の `PASS assertions=N` を検査し、テストが未実行または失敗した場合も失敗します。テスト用modは検証時にのみロードします。配布jarには本modを収録します。
+
+### 手動テスト
+
+ゲーム内での操作とマルチプレイでの実射は、[手動検証手順](docs/manual-test.md) に沿って確認してください。
 
 ライセンス: MIT（[LICENSE](LICENSE)）。依存modのライセンスは各配布元に従います。
