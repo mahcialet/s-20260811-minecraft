@@ -51,6 +51,8 @@ neoForge {
 def compatTestDirectory = layout.projectDirectory.dir('run-compat-tests')
 def compatTestResult = compatTestDirectory.file('compat-test-result.txt')
 
+// NeoForge 26.1.2.71's Eula constructor accepts development runs through
+// SharedConstants.IS_RUNNING_IN_IDE, including the first run in a fresh directory.
 tasks.register('prepareCompatTestEnvironment') {
     doLast {
         def directory = compatTestDirectory.asFile
