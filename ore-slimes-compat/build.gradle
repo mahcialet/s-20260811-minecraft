@@ -1,0 +1,59 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+group = 'dev.marmite.oreslimescompat'
+version = '1.0.0'
+base { archivesName = 'ore-slimes-compat' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+neoForge {
+    version = '26.1.2.71'
+    addModdingDependenciesTo sourceSets.test
+    mods {
+        ore_slimes_compat { sourceSet(sourceSets.main) }
+        ore_slimes_compat_tests { sourceSet(sourceSets.test) }
+    }
+    runs {
+        configureEach { loadedMods = [mods.ore_slimes_compat] }
+        server { server(); programArgument '--nogui' }
+        client { client() }
+        compatTestServer {
+            server()
+            gameDirectory = project.file('run-tests')
+            programArgument '--nogui'
+            sourceSet = sourceSets.test
+            loadedMods = [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
+        }
+    }
+}
+dependencies { implementation files('../mods/oreslimes-1.0.108.jar') }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+tasks.named('jar', Jar) { from('LICENSE') }
+tasks.named('wrapper', Wrapper) { distributionType = Wrapper.DistributionType.BIN }
+tasks.named('test', Test) { enabled = false } // Tests run inside NeoForge, not a plain JVM.
+tasks.register('prepareCompatTests') {
+    doLast {
+        def directory = file('run-tests')
+        directory.mkdirs()
+        delete new File(directory, 'compat-test-result.txt')
+        new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+view-distance=2
+simulation-distance=2
+spawn-protection=0
+level-name=compat-test-world
+'''
+    }
+}
+tasks.named('runCompatTestServer').configure {
+    dependsOn 'prepareCompatTests'
+    doLast {
+        def result = file('run-tests/compat-test-result.txt')
+        if (!result.isFile() || !(result.text.trim() ==~ /PASS assertions=[1-9][0-9]*/)) {
+            throw new GradleException('Runtime tests failed; see run-tests/logs/latest.log')
+        }
+    }
+}

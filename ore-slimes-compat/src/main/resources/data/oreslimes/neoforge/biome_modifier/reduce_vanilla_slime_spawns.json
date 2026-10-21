@@ -1,0 +1,5 @@
+{
+  "type": "neoforge:remove_spawns",
+  "biomes": [],
+  "entity_types": ["minecraft:slime"]
+}

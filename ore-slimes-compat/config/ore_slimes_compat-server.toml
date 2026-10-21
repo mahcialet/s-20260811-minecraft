@@ -1,0 +1,13 @@
+debugSpawner = false
+
+[oreSlimeSpawner]
+enabled = true
+intervalTicks = 1200
+maxNearby = 3
+spawnChance = 0.35
+searchAttempts = 4
+countRadius = 72
+minSpawnDistance = 18
+maxSpawnDistance = 52
+spawnVanillaSlimes = false
+vanillaSlimeChance = 0.02
