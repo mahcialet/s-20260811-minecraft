@@ -1,0 +1,43 @@
+license="MIT"
+
+[[mods]]
+modId="slime_tech_compat"
+version="0.4.0-dev"
+displayName="Slime Tech 0.1.44 Compatibility Patch"
+authors="mahcialet"
+description='''
+Independent compatibility patch. Mining tags, JEI documentation, mixed-tank safety,
+and stable pump fluid identities. Optional pump-source and grinder policies.
+Contains no original Slime Tech classes or assets. Back up the world before use.
+'''
+
+[[mixins]]
+config="slime_tech_compat.mixins.json"
+
+[[dependencies.slime_tech_compat]]
+modId="slime_tech"
+type="required"
+versionRange="[0.1.44]"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.slime_tech_compat]]
+modId="minecraft"
+type="required"
+versionRange="[26.1.2]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.slime_tech_compat]]
+modId="neoforge"
+type="required"
+versionRange="[26.1.2.94]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.slime_tech_compat]]
+modId="jei"
+type="optional"
+versionRange="[29.16.0.46,30)"
+ordering="AFTER"
+side="CLIENT"

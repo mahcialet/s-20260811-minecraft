@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "slime_tech:casting_mold",
+    "slime_tech:generator",
+    "slime_tech:grinder",
+    "slime_tech:destructor",
+    "slime_tech:mixer",
+    "slime_tech:pump",
+    "slime_tech:energy_converter",
+    "slime_tech:energy_cell",
+    "slime_tech:reactor_core"
+  ]
+}

@@ -1,0 +1,14 @@
+[21:48:18] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:<local-path> Service=FML Env=CLIENT
+INFO: Slime Tech Compat 0.4.0-dev loaded; target SHA-256 verified. Back up before migration.
+[21:48:44] [Server thread/INFO] [minecraft/IntegratedServer]: Starting integrated minecraft server version 26.1.2
+[21:48:45] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[21:48:47] [Render thread/INFO] [me.je.li.lo.PluginCaller/]: Registering recipes...
+[21:48:47] [Render thread/INFO] [me.je.li.lo.PluginCallerTimerRunnable/]: Registering recipes: jei:minecraft took 179.3 milliseconds
+[21:48:47] [Render thread/INFO] [me.je.li.lo.PluginCaller/]: Registering recipes took 192.2 milliseconds
+[21:48:47] [Render thread/INFO] [me.je.li.lo.PluginCaller/]: Registering recipes transfer handlers...
+[21:48:47] [Render thread/INFO] [me.je.li.lo.PluginCaller/]: Registering recipes transfer handlers took 2.388 milliseconds
+[21:48:47] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 2 advancements
+[21:51:21] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:51:22] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[21:51:34] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
+BUILD SUCCESSFUL in 3m 21s

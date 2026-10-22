@@ -1,0 +1,836 @@
+		Slime Tech Compat runtime verification 1.0 (slime_tech_compat_tests)
+[21:50:28] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:<local-path> Service=FML Env=SERVER
+INFO: Slime Tech Compat 0.4.0-dev loaded; target SHA-256 verified. Back up before migration.
+[21:50:36] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+CHECK ST-022 conservation at 7000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/1
+CHECK ST-022 bucket fluid conservation at 7000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/2
+CHECK ST-022 bucket fluid conservation at 7000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/1
+CHECK ST-022 bucket fluid conservation at 7000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/2
+CHECK ST-022 bucket fluid conservation at 7000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/1
+CHECK ST-022 bucket fluid conservation at 7000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/2
+CHECK ST-022 bucket fluid conservation at 7000/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/1
+CHECK ST-022 bucket fluid conservation at 7500/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/2
+CHECK ST-022 bucket fluid conservation at 7500/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/1
+CHECK ST-022 bucket fluid conservation at 7500/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/2
+CHECK ST-022 bucket fluid conservation at 7500/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/1
+CHECK ST-022 bucket fluid conservation at 7500/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/2
+CHECK ST-022 bucket fluid conservation at 7500/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/1
+CHECK ST-022 bucket fluid conservation at 7999/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/2
+CHECK ST-022 bucket fluid conservation at 7999/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/1
+CHECK ST-022 bucket fluid conservation at 7999/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/2
+CHECK ST-022 bucket fluid conservation at 7999/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/1
+CHECK ST-022 bucket fluid conservation at 7999/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/2
+CHECK ST-022 bucket fluid conservation at 7999/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/1
+CHECK ST-022 bucket fluid conservation at 8000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/2
+CHECK ST-022 bucket fluid conservation at 8000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/1
+CHECK ST-022 bucket fluid conservation at 8000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/2
+CHECK ST-022 bucket fluid conservation at 8000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/1
+CHECK ST-022 bucket fluid conservation at 8000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/2
+CHECK ST-022 bucket fluid conservation at 8000/64/2
+CHECK ST-022 partial extraction reaches 7500 via original fluid API
+CHECK ST-002 casting simulation
+CHECK ST-002 casting 1000mB
+CHECK ST-002 casting not ready at 199 ticks
+CHECK ST-002 cooldown reaches zero at 200 ticks
+CHECK ST-002 casting 1 ingot on tick after 200-tick cooldown
+CHECK Grinder new energy honors optional policy
+CHECK ST-008 completion FE=0 enabled=false
+CHECK ST-008 completion cost FE=0
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=14 enabled=false
+CHECK ST-008 completion cost FE=14
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=15 enabled=false
+CHECK ST-008 completion cost FE=15
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=119 enabled=false
+CHECK ST-008 completion cost FE=119
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=120 enabled=false
+CHECK ST-008 completion cost FE=120
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=2000 enabled=false
+CHECK ST-008 completion cost FE=2000
+CHECK ST-008 saved energy preserved
+CHECK ST-001 tag casting_mold
+CHECK ST-001 one body loot casting_mold
+CHECK ST-001 appropriate pickaxe casting_mold
+CHECK ST-001 tag generator
+CHECK ST-001 one body loot generator
+CHECK ST-001 appropriate pickaxe generator
+CHECK ST-001 tag grinder
+CHECK ST-001 one body loot grinder
+CHECK ST-001 appropriate pickaxe grinder
+CHECK ST-001 tag destructor
+CHECK ST-001 one body loot destructor
+CHECK ST-001 appropriate pickaxe destructor
+CHECK ST-001 tag mixer
+CHECK ST-001 one body loot mixer
+CHECK ST-001 appropriate pickaxe mixer
+CHECK ST-001 tag pump
+CHECK ST-001 one body loot pump
+CHECK ST-001 appropriate pickaxe pump
+CHECK ST-001 tag energy_converter
+CHECK ST-001 one body loot energy_converter
+CHECK ST-001 appropriate pickaxe energy_converter
+CHECK ST-001 tag energy_cell
+CHECK ST-001 one body loot energy_cell
+CHECK ST-001 appropriate pickaxe energy_cell
+CHECK ST-001 tag reactor_core
+CHECK ST-001 one body loot reactor_core
+CHECK ST-001 appropriate pickaxe reactor_core
+CHECK Tank registered
+CHECK Tank simulation preserves empty state
+CHECK Tank normal water insertion
+CHECK Tank simulate extraction
+CHECK Tank normal extraction
+CHECK Tank save reload
+CHECK ST-001 Grinder pickaxe tag loaded
+CHECK Pump builtin identity roundtrip 0
+CHECK Pump stable ID persisted 0
+CHECK Pump builtin identity roundtrip 1
+CHECK Pump stable ID persisted 1
+CHECK ST-006 removed source identity
+CHECK ST-006 changed source identity
+CHECK ST-006 no water added to lava buffer
+CHECK ST-007 water normal source and cost
+CHECK ST-007 lava source optional policy
+CHECK ST-007 source remains per original semantics
+CHECK SAFETY real Tank accessor Mixin applied
+CHECK SAFETY mixed water/lava network held
+CHECK SAFETY held Tank GUI slots retain local water amount and identity
+CHECK SAFETY held Tank GUI slots retain local lava amount and identity
+CHECK SAFETY actual NeoForge fluid capability registered
+CHECK SAFETY mixed capability extraction refused commit=false
+CHECK SAFETY mixed capability insertion refused commit=false
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=false
+CHECK SAFETY mixed capability extraction refused commit=true
+CHECK SAFETY mixed capability insertion refused commit=true
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=false
+CHECK SAFETY mixed insertion blocked simulate=false
+CHECK SAFETY mixed transfer and simulation preserve per-ID local saves
+CHECK SAFETY mixed saved amounts retained after reload
+CHECK SAFETY mixed network recovers after separation
+CHECK SAFETY normal simulation preserves quantity
+CHECK SAFETY normal extraction regression
+CHECK SAFETY normal Tank capability available
+CHECK SAFETY capability extract simulation
+CHECK SAFETY aborted capability extraction preserves amount
+CHECK SAFETY capability insert simulation
+CHECK SAFETY aborted capability insertion preserves amount
+CHECK SAFETY capability extract before commit
+CHECK SAFETY committed capability extraction changes amount once
+CHECK SAFETY capability insert before commit
+CHECK SAFETY committed capability insertion changes amount once
+CHECK SAFETY second network member capability available
+CHECK SAFETY transaction spans two tank local buffers
+CHECK SAFETY nested transaction uses another network capability
+CHECK SAFETY outer abort reverts committed child and both local tank identities
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer transaction extraction
+CHECK SAFETY inner transaction extraction before abort
+CHECK SAFETY inner abort followed by outer commit removes only outer amount
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY invalid local amount held -1
+CHECK SAFETY invalid amount saved verbatim -1 round 0
+CHECK SAFETY invalid amount saved verbatim -1 round 1
+CHECK SAFETY invalid local amount held 8001
+CHECK SAFETY invalid amount saved verbatim 8001 round 0
+CHECK SAFETY invalid amount saved verbatim 8001 round 1
+CHECK SAFETY unidentified Tank held  round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY legacy Tank code retained 0
+CHECK SAFETY unidentified Tank held  round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY legacy Tank code retained 1
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY empty stale-ID Tank permitted
+CHECK SAFETY legacy dynamic Pump held round 0
+CHECK SAFETY legacy Pump extraction blocked 0
+CHECK SAFETY legacy Pump diagnostic retained 0
+CHECK SAFETY legacy Pump quantity and energy retained 0
+CHECK SAFETY legacy dynamic Pump held round 1
+CHECK SAFETY legacy Pump extraction blocked 1
+CHECK SAFETY legacy Pump diagnostic retained 1
+CHECK SAFETY legacy Pump quantity and energy retained 1
+CHECK SAFETY legacy dynamic Pump held round 2
+CHECK SAFETY legacy Pump extraction blocked 2
+CHECK SAFETY legacy Pump diagnostic retained 2
+CHECK SAFETY legacy Pump quantity and energy retained 2
+CHECK SAFETY missing fluid Pump held 0
+CHECK SAFETY missing fluid ID and amount retained 0
+CHECK SAFETY missing fluid Pump held 1
+CHECK SAFETY missing fluid ID and amount retained 1
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:water
+CHECK SAFETY schema1 normal roundtrip minecraft:water
+CHECK SAFETY Pump fluid capability exists minecraft:water
+CHECK SAFETY Pump full drain before abort minecraft:water
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:water
+CHECK SAFETY Pump committed extraction minecraft:water
+CHECK SAFETY Pump commit drains once minecraft:water
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:lava
+CHECK SAFETY schema1 normal roundtrip minecraft:lava
+CHECK SAFETY Pump fluid capability exists minecraft:lava
+CHECK SAFETY Pump full drain before abort minecraft:lava
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:lava
+CHECK SAFETY Pump committed extraction minecraft:lava
+CHECK SAFETY Pump commit drains once minecraft:lava
+CHECK SAFETY future schema held 0
+CHECK SAFETY future held Pump refuses incoming energy 0
+CHECK SAFETY future schema and original runtime number retained 0
+CHECK SAFETY future unknown nested data retained 0
+CHECK SAFETY future held tick preserves amount and energy 0
+CHECK SAFETY future schema held 1
+CHECK SAFETY future held Pump refuses incoming energy 1
+CHECK SAFETY future schema and original runtime number retained 1
+CHECK SAFETY future unknown nested data retained 1
+CHECK SAFETY future held tick preserves amount and energy 1
+CHECK SAFETY future schema held 2
+CHECK SAFETY future held Pump refuses incoming energy 2
+CHECK SAFETY future schema and original runtime number retained 2
+CHECK SAFETY future unknown nested data retained 2
+CHECK SAFETY future held tick preserves amount and energy 2
+CHECK SAFETY schema key type collision held
+CHECK SAFETY schema key type collision retained verbatim
+SLIME_COMPAT_RUNTIME_PASS baseline=false assertions=271
+[21:50:37] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:50:37] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+		Slime Tech Compat runtime verification 1.0 (slime_tech_compat_tests)
+[21:50:38] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:<local-path> Service=FML Env=SERVER
+INFO: Slime Tech Compat 0.4.0-dev loaded; target SHA-256 verified. Back up before migration.
+[21:50:46] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+CHECK ST-022 conservation at 7000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/1
+CHECK ST-022 bucket fluid conservation at 7000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/2
+CHECK ST-022 bucket fluid conservation at 7000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/1
+CHECK ST-022 bucket fluid conservation at 7000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/2
+CHECK ST-022 bucket fluid conservation at 7000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/1
+CHECK ST-022 bucket fluid conservation at 7000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/2
+CHECK ST-022 bucket fluid conservation at 7000/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/1
+CHECK ST-022 bucket fluid conservation at 7500/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/2
+CHECK ST-022 bucket fluid conservation at 7500/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/1
+CHECK ST-022 bucket fluid conservation at 7500/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/2
+CHECK ST-022 bucket fluid conservation at 7500/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/1
+CHECK ST-022 bucket fluid conservation at 7500/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/2
+CHECK ST-022 bucket fluid conservation at 7500/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/1
+CHECK ST-022 bucket fluid conservation at 7999/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/2
+CHECK ST-022 bucket fluid conservation at 7999/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/1
+CHECK ST-022 bucket fluid conservation at 7999/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/2
+CHECK ST-022 bucket fluid conservation at 7999/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/1
+CHECK ST-022 bucket fluid conservation at 7999/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/2
+CHECK ST-022 bucket fluid conservation at 7999/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/1
+CHECK ST-022 bucket fluid conservation at 8000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/2
+CHECK ST-022 bucket fluid conservation at 8000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/1
+CHECK ST-022 bucket fluid conservation at 8000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/2
+CHECK ST-022 bucket fluid conservation at 8000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/1
+CHECK ST-022 bucket fluid conservation at 8000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/2
+CHECK ST-022 bucket fluid conservation at 8000/64/2
+CHECK ST-022 partial extraction reaches 7500 via original fluid API
+CHECK ST-002 casting simulation
+CHECK ST-002 casting 1000mB
+CHECK ST-002 casting not ready at 199 ticks
+CHECK ST-002 cooldown reaches zero at 200 ticks
+CHECK ST-002 casting 1 ingot on tick after 200-tick cooldown
+CHECK Grinder new energy honors optional policy
+CHECK ST-008 completion FE=0 enabled=true
+CHECK ST-008 completion cost FE=0
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=14 enabled=true
+CHECK ST-008 completion cost FE=14
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=15 enabled=true
+CHECK ST-008 completion cost FE=15
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=119 enabled=true
+CHECK ST-008 completion cost FE=119
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=120 enabled=true
+CHECK ST-008 completion cost FE=120
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=2000 enabled=true
+CHECK ST-008 completion cost FE=2000
+CHECK ST-008 saved energy preserved
+CHECK ST-001 tag casting_mold
+CHECK ST-001 one body loot casting_mold
+CHECK ST-001 appropriate pickaxe casting_mold
+CHECK ST-001 tag generator
+CHECK ST-001 one body loot generator
+CHECK ST-001 appropriate pickaxe generator
+CHECK ST-001 tag grinder
+CHECK ST-001 one body loot grinder
+CHECK ST-001 appropriate pickaxe grinder
+CHECK ST-001 tag destructor
+CHECK ST-001 one body loot destructor
+CHECK ST-001 appropriate pickaxe destructor
+CHECK ST-001 tag mixer
+CHECK ST-001 one body loot mixer
+CHECK ST-001 appropriate pickaxe mixer
+CHECK ST-001 tag pump
+CHECK ST-001 one body loot pump
+CHECK ST-001 appropriate pickaxe pump
+CHECK ST-001 tag energy_converter
+CHECK ST-001 one body loot energy_converter
+CHECK ST-001 appropriate pickaxe energy_converter
+CHECK ST-001 tag energy_cell
+CHECK ST-001 one body loot energy_cell
+CHECK ST-001 appropriate pickaxe energy_cell
+CHECK ST-001 tag reactor_core
+CHECK ST-001 one body loot reactor_core
+CHECK ST-001 appropriate pickaxe reactor_core
+CHECK Tank registered
+CHECK Tank simulation preserves empty state
+CHECK Tank normal water insertion
+CHECK Tank simulate extraction
+CHECK Tank normal extraction
+CHECK Tank save reload
+CHECK ST-001 Grinder pickaxe tag loaded
+CHECK Pump builtin identity roundtrip 0
+CHECK Pump stable ID persisted 0
+CHECK Pump builtin identity roundtrip 1
+CHECK Pump stable ID persisted 1
+CHECK ST-006 removed source identity
+CHECK ST-006 changed source identity
+CHECK ST-006 no water added to lava buffer
+CHECK ST-007 water normal source and cost
+CHECK ST-007 lava source optional policy
+CHECK ST-007 source remains per original semantics
+CHECK SAFETY real Tank accessor Mixin applied
+CHECK SAFETY mixed water/lava network held
+CHECK SAFETY held Tank GUI slots retain local water amount and identity
+CHECK SAFETY held Tank GUI slots retain local lava amount and identity
+CHECK SAFETY actual NeoForge fluid capability registered
+CHECK SAFETY mixed capability extraction refused commit=false
+CHECK SAFETY mixed capability insertion refused commit=false
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=false
+CHECK SAFETY mixed capability extraction refused commit=true
+CHECK SAFETY mixed capability insertion refused commit=true
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=false
+CHECK SAFETY mixed insertion blocked simulate=false
+CHECK SAFETY mixed transfer and simulation preserve per-ID local saves
+CHECK SAFETY mixed saved amounts retained after reload
+CHECK SAFETY mixed network recovers after separation
+CHECK SAFETY normal simulation preserves quantity
+CHECK SAFETY normal extraction regression
+CHECK SAFETY normal Tank capability available
+CHECK SAFETY capability extract simulation
+CHECK SAFETY aborted capability extraction preserves amount
+CHECK SAFETY capability insert simulation
+CHECK SAFETY aborted capability insertion preserves amount
+CHECK SAFETY capability extract before commit
+CHECK SAFETY committed capability extraction changes amount once
+CHECK SAFETY capability insert before commit
+CHECK SAFETY committed capability insertion changes amount once
+CHECK SAFETY second network member capability available
+CHECK SAFETY transaction spans two tank local buffers
+CHECK SAFETY nested transaction uses another network capability
+CHECK SAFETY outer abort reverts committed child and both local tank identities
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer transaction extraction
+CHECK SAFETY inner transaction extraction before abort
+CHECK SAFETY inner abort followed by outer commit removes only outer amount
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY invalid local amount held -1
+CHECK SAFETY invalid amount saved verbatim -1 round 0
+CHECK SAFETY invalid amount saved verbatim -1 round 1
+CHECK SAFETY invalid local amount held 8001
+CHECK SAFETY invalid amount saved verbatim 8001 round 0
+CHECK SAFETY invalid amount saved verbatim 8001 round 1
+CHECK SAFETY unidentified Tank held  round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY legacy Tank code retained 0
+CHECK SAFETY unidentified Tank held  round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY legacy Tank code retained 1
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY empty stale-ID Tank permitted
+CHECK SAFETY legacy dynamic Pump held round 0
+CHECK SAFETY legacy Pump extraction blocked 0
+CHECK SAFETY legacy Pump diagnostic retained 0
+CHECK SAFETY legacy Pump quantity and energy retained 0
+CHECK SAFETY legacy dynamic Pump held round 1
+CHECK SAFETY legacy Pump extraction blocked 1
+CHECK SAFETY legacy Pump diagnostic retained 1
+CHECK SAFETY legacy Pump quantity and energy retained 1
+CHECK SAFETY legacy dynamic Pump held round 2
+CHECK SAFETY legacy Pump extraction blocked 2
+CHECK SAFETY legacy Pump diagnostic retained 2
+CHECK SAFETY legacy Pump quantity and energy retained 2
+CHECK SAFETY missing fluid Pump held 0
+CHECK SAFETY missing fluid ID and amount retained 0
+CHECK SAFETY missing fluid Pump held 1
+CHECK SAFETY missing fluid ID and amount retained 1
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:water
+CHECK SAFETY schema1 normal roundtrip minecraft:water
+CHECK SAFETY Pump fluid capability exists minecraft:water
+CHECK SAFETY Pump full drain before abort minecraft:water
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:water
+CHECK SAFETY Pump committed extraction minecraft:water
+CHECK SAFETY Pump commit drains once minecraft:water
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:lava
+CHECK SAFETY schema1 normal roundtrip minecraft:lava
+CHECK SAFETY Pump fluid capability exists minecraft:lava
+CHECK SAFETY Pump full drain before abort minecraft:lava
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:lava
+CHECK SAFETY Pump committed extraction minecraft:lava
+CHECK SAFETY Pump commit drains once minecraft:lava
+CHECK SAFETY future schema held 0
+CHECK SAFETY future held Pump refuses incoming energy 0
+CHECK SAFETY future schema and original runtime number retained 0
+CHECK SAFETY future unknown nested data retained 0
+CHECK SAFETY future held tick preserves amount and energy 0
+CHECK SAFETY future schema held 1
+CHECK SAFETY future held Pump refuses incoming energy 1
+CHECK SAFETY future schema and original runtime number retained 1
+CHECK SAFETY future unknown nested data retained 1
+CHECK SAFETY future held tick preserves amount and energy 1
+CHECK SAFETY future schema held 2
+CHECK SAFETY future held Pump refuses incoming energy 2
+CHECK SAFETY future schema and original runtime number retained 2
+CHECK SAFETY future unknown nested data retained 2
+CHECK SAFETY future held tick preserves amount and energy 2
+CHECK SAFETY schema key type collision held
+CHECK SAFETY schema key type collision retained verbatim
+SLIME_COMPAT_RUNTIME_PASS baseline=false assertions=271
+[21:50:46] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:50:46] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+		Slime Tech Compat runtime verification 1.0 (slime_tech_compat_tests)
+[21:50:48] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:<local-path> Service=FML Env=SERVER
+INFO: Slime Tech Compat 0.4.0-dev loaded; target SHA-256 verified. Back up before migration.
+[21:50:55] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+CHECK ENV-03 actual packaged patch JAR loaded
+CHECK ST-022 conservation at 7000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7500 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 7999 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=1
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=2
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 conservation at 8000 count=64
+CHECK ST-022 repeated tick no further conversion
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/1
+CHECK ST-022 bucket fluid conservation at 7000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/1/2
+CHECK ST-022 bucket fluid conservation at 7000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/1
+CHECK ST-022 bucket fluid conservation at 7000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/2/2
+CHECK ST-022 bucket fluid conservation at 7000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/1
+CHECK ST-022 bucket fluid conservation at 7000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7000/64/2
+CHECK ST-022 bucket fluid conservation at 7000/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/1
+CHECK ST-022 bucket fluid conservation at 7500/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/1/2
+CHECK ST-022 bucket fluid conservation at 7500/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/1
+CHECK ST-022 bucket fluid conservation at 7500/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/2/2
+CHECK ST-022 bucket fluid conservation at 7500/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/1
+CHECK ST-022 bucket fluid conservation at 7500/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7500/64/2
+CHECK ST-022 bucket fluid conservation at 7500/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/1
+CHECK ST-022 bucket fluid conservation at 7999/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/1/2
+CHECK ST-022 bucket fluid conservation at 7999/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/1
+CHECK ST-022 bucket fluid conservation at 7999/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/2/2
+CHECK ST-022 bucket fluid conservation at 7999/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/1
+CHECK ST-022 bucket fluid conservation at 7999/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 7999/64/2
+CHECK ST-022 bucket fluid conservation at 7999/64/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/1
+CHECK ST-022 bucket fluid conservation at 8000/1/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/1/2
+CHECK ST-022 bucket fluid conservation at 8000/1/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/1
+CHECK ST-022 bucket fluid conservation at 8000/2/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/2/2
+CHECK ST-022 bucket fluid conservation at 8000/2/2
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/1
+CHECK ST-022 bucket fluid conservation at 8000/64/1
+CHECK ST-022 bucket stacks preserved
+CHECK ST-022 bucket item conservation at 8000/64/2
+CHECK ST-022 bucket fluid conservation at 8000/64/2
+CHECK ST-022 partial extraction reaches 7500 via original fluid API
+CHECK ST-002 casting simulation
+CHECK ST-002 casting 1000mB
+CHECK ST-002 casting not ready at 199 ticks
+CHECK ST-002 cooldown reaches zero at 200 ticks
+CHECK ST-002 casting 1 ingot on tick after 200-tick cooldown
+CHECK Grinder new energy honors optional policy
+CHECK ST-008 completion FE=0 enabled=false
+CHECK ST-008 completion cost FE=0
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=14 enabled=false
+CHECK ST-008 completion cost FE=14
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=15 enabled=false
+CHECK ST-008 completion cost FE=15
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=119 enabled=false
+CHECK ST-008 completion cost FE=119
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=120 enabled=false
+CHECK ST-008 completion cost FE=120
+CHECK ST-008 saved energy preserved
+CHECK ST-008 completion FE=2000 enabled=false
+CHECK ST-008 completion cost FE=2000
+CHECK ST-008 saved energy preserved
+CHECK ST-001 tag casting_mold
+CHECK ST-001 one body loot casting_mold
+CHECK ST-001 appropriate pickaxe casting_mold
+CHECK ST-001 tag generator
+CHECK ST-001 one body loot generator
+CHECK ST-001 appropriate pickaxe generator
+CHECK ST-001 tag grinder
+CHECK ST-001 one body loot grinder
+CHECK ST-001 appropriate pickaxe grinder
+CHECK ST-001 tag destructor
+CHECK ST-001 one body loot destructor
+CHECK ST-001 appropriate pickaxe destructor
+CHECK ST-001 tag mixer
+CHECK ST-001 one body loot mixer
+CHECK ST-001 appropriate pickaxe mixer
+CHECK ST-001 tag pump
+CHECK ST-001 one body loot pump
+CHECK ST-001 appropriate pickaxe pump
+CHECK ST-001 tag energy_converter
+CHECK ST-001 one body loot energy_converter
+CHECK ST-001 appropriate pickaxe energy_converter
+CHECK ST-001 tag energy_cell
+CHECK ST-001 one body loot energy_cell
+CHECK ST-001 appropriate pickaxe energy_cell
+CHECK ST-001 tag reactor_core
+CHECK ST-001 one body loot reactor_core
+CHECK ST-001 appropriate pickaxe reactor_core
+CHECK Tank registered
+CHECK Tank simulation preserves empty state
+CHECK Tank normal water insertion
+CHECK Tank simulate extraction
+CHECK Tank normal extraction
+CHECK Tank save reload
+CHECK ST-001 Grinder pickaxe tag loaded
+CHECK Pump builtin identity roundtrip 0
+CHECK Pump stable ID persisted 0
+CHECK Pump builtin identity roundtrip 1
+CHECK Pump stable ID persisted 1
+CHECK ST-006 removed source identity
+CHECK ST-006 changed source identity
+CHECK ST-006 no water added to lava buffer
+CHECK ST-007 water normal source and cost
+CHECK ST-007 lava source optional policy
+CHECK ST-007 source remains per original semantics
+CHECK SAFETY real Tank accessor Mixin applied
+CHECK SAFETY mixed water/lava network held
+CHECK SAFETY held Tank GUI slots retain local water amount and identity
+CHECK SAFETY held Tank GUI slots retain local lava amount and identity
+CHECK SAFETY actual NeoForge fluid capability registered
+CHECK SAFETY mixed capability extraction refused commit=false
+CHECK SAFETY mixed capability insertion refused commit=false
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=false
+CHECK SAFETY mixed capability extraction refused commit=true
+CHECK SAFETY mixed capability insertion refused commit=true
+CHECK SAFETY mixed capability transaction preserves per-ID saved data commit=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=true
+CHECK SAFETY mixed insertion blocked simulate=true
+CHECK SAFETY mixed extraction blocked simulate=false
+CHECK SAFETY mixed insertion blocked simulate=false
+CHECK SAFETY mixed transfer and simulation preserve per-ID local saves
+CHECK SAFETY mixed saved amounts retained after reload
+CHECK SAFETY mixed network recovers after separation
+CHECK SAFETY normal simulation preserves quantity
+CHECK SAFETY normal extraction regression
+CHECK SAFETY normal Tank capability available
+CHECK SAFETY capability extract simulation
+CHECK SAFETY aborted capability extraction preserves amount
+CHECK SAFETY capability insert simulation
+CHECK SAFETY aborted capability insertion preserves amount
+CHECK SAFETY capability extract before commit
+CHECK SAFETY committed capability extraction changes amount once
+CHECK SAFETY capability insert before commit
+CHECK SAFETY committed capability insertion changes amount once
+CHECK SAFETY second network member capability available
+CHECK SAFETY transaction spans two tank local buffers
+CHECK SAFETY nested transaction uses another network capability
+CHECK SAFETY outer abort reverts committed child and both local tank identities
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer abort restores each member GUI aggregate without a later tick
+CHECK SAFETY outer transaction extraction
+CHECK SAFETY inner transaction extraction before abort
+CHECK SAFETY inner abort followed by outer commit removes only outer amount
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY inner abort preserves outer transaction aggregate in each GUI
+CHECK SAFETY invalid local amount held -1
+CHECK SAFETY invalid amount saved verbatim -1 round 0
+CHECK SAFETY invalid amount saved verbatim -1 round 1
+CHECK SAFETY invalid local amount held 8001
+CHECK SAFETY invalid amount saved verbatim 8001 round 0
+CHECK SAFETY invalid amount saved verbatim 8001 round 1
+CHECK SAFETY unidentified Tank held  round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY legacy Tank code retained 0
+CHECK SAFETY unidentified Tank held  round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY legacy Tank code retained 1
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 0
+CHECK SAFETY unidentified Tank amount and ID retained 0
+CHECK SAFETY unidentified Tank held absent_fluid_mod:missing round 1
+CHECK SAFETY unidentified Tank amount and ID retained 1
+CHECK SAFETY empty stale-ID Tank permitted
+CHECK SAFETY legacy dynamic Pump held round 0
+CHECK SAFETY legacy Pump extraction blocked 0
+CHECK SAFETY legacy Pump diagnostic retained 0
+CHECK SAFETY legacy Pump quantity and energy retained 0
+CHECK SAFETY legacy dynamic Pump held round 1
+CHECK SAFETY legacy Pump extraction blocked 1
+CHECK SAFETY legacy Pump diagnostic retained 1
+CHECK SAFETY legacy Pump quantity and energy retained 1
+CHECK SAFETY legacy dynamic Pump held round 2
+CHECK SAFETY legacy Pump extraction blocked 2
+CHECK SAFETY legacy Pump diagnostic retained 2
+CHECK SAFETY legacy Pump quantity and energy retained 2
+CHECK SAFETY missing fluid Pump held 0
+CHECK SAFETY missing fluid ID and amount retained 0
+CHECK SAFETY missing fluid Pump held 1
+CHECK SAFETY missing fluid ID and amount retained 1
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:water
+CHECK SAFETY schema1 normal roundtrip minecraft:water
+CHECK SAFETY Pump fluid capability exists minecraft:water
+CHECK SAFETY Pump full drain before abort minecraft:water
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:water
+CHECK SAFETY Pump committed extraction minecraft:water
+CHECK SAFETY Pump commit drains once minecraft:water
+CHECK SAFETY schema1 ID resolves independently of stale dynamic number minecraft:lava
+CHECK SAFETY schema1 normal roundtrip minecraft:lava
+CHECK SAFETY Pump fluid capability exists minecraft:lava
+CHECK SAFETY Pump full drain before abort minecraft:lava
+CHECK SAFETY Pump abort restores both amount and type after emptying minecraft:lava
+CHECK SAFETY Pump committed extraction minecraft:lava
+CHECK SAFETY Pump commit drains once minecraft:lava
+CHECK SAFETY future schema held 0
+CHECK SAFETY future held Pump refuses incoming energy 0
+CHECK SAFETY future schema and original runtime number retained 0
+CHECK SAFETY future unknown nested data retained 0
+CHECK SAFETY future held tick preserves amount and energy 0
+CHECK SAFETY future schema held 1
+CHECK SAFETY future held Pump refuses incoming energy 1
+CHECK SAFETY future schema and original runtime number retained 1
+CHECK SAFETY future unknown nested data retained 1
+CHECK SAFETY future held tick preserves amount and energy 1
+CHECK SAFETY future schema held 2
+CHECK SAFETY future held Pump refuses incoming energy 2
+CHECK SAFETY future schema and original runtime number retained 2
+CHECK SAFETY future unknown nested data retained 2
+CHECK SAFETY future held tick preserves amount and energy 2
+CHECK SAFETY schema key type collision held
+CHECK SAFETY schema key type collision retained verbatim
+SLIME_COMPAT_RUNTIME_PASS baseline=false assertions=272
+[21:50:55] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:50:56] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+BUILD SUCCESSFUL in 36s

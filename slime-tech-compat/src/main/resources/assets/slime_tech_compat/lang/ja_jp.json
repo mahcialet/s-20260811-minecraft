@@ -1,0 +1,14 @@
+{
+  "jei.slime_tech_compat.casting_mold": "Slime Tech 鋳型",
+  "jei.slime_tech_compat.mixer": "Slime Tech ミキサー",
+  "jei.slime_tech_compat.info.casting": "Slime Tech 0.1.44の処理を表示しています。Condensed Slime 1,000 mBを200 tick（20 TPSで10秒）冷却するとGel Ingotが1個できます。電力は不要です。互換パッチはこの製法・量・時間を変更しません。 完成処理は冷却終了の次のtickです。",
+  "jei.slime_tech_compat.info.bootstrap": "かまどでSlime Blockを焼き、出力欄のDried SlimeをSlime Techの特殊処理で1個あたりCondensed Slime 1,000 mBへ変換します。特殊処理時に燃料欄へ空バケツを「ちょうど1個」入れておくとCondensed Slime Bucketへ置き換わります。まだ燃焼中で、出力が処理される前に空バケツを置いてください。入手したバケツでCasting Moldを右クリックします。バケツがない場合はかまどの隠しバッファ（8,000 mB）に入り、耐熱パイプで抽出します。隠しバッファの撤去時清掃はこのパッチでも未修正です。",
+  "jei.slime_tech_compat.info.pipes": "Basic Fluid PipeはCondensed Slimeなどの高温流体を拒否します。Condensed Slimeや溶岩にはReinforced Fluid Pipeを使います。最初のGel Ingotはかまどの燃料欄の空バケツ経由で作れます。かまどとCasting Moldの間のタンクは必須ではありません。",
+  "jei.slime_tech_compat.info.mixer_clay": "粘土：中央にSlime Ballを「ちょうど1個」、周囲8枠のうち1枠にSlime TechのDustを「ちょうど1個」置き、他の枠を空にします。Water 250 mB以上を供給します。出力は粘土ブロック1個です。100 tick・12 FE/t（合計1,200 FE）。表示は配置例で、Dustは周囲のどの1枠でも構いません。元実装では素材を複数個スタックすると一致しません。",
+  "jei.slime_tech_compat.info.mixer_radioactive": "Radioactive Slime：上段はSlimy Coalを3枠、中段はSlimy Copperを3枠、下段はSlimy Coalを3枠に配置します（Ore Slimes素材）。タンクはCondensed Slime「ちょうど1,000 mB」である必要があります。100 tick・12 FE/t後、各枠から1個消費し、同じタンク内がRadioactive Slime 1,000 mBになります。両方のOre Slimes素材が存在するときだけJEIに表示します。 この9枠は2個以上のスタックでも成立し、各枠から1個ずつ消費します。粘土工程の「ちょうど1個」とは異なります。",
+  "jei.slime_tech_compat.info.tank_guard": "このパッチは接続タンクの異種流体混在、不正な内容、設定上限を超える規模、隣接チャンクの未ロードを検出すると転送を止めます。停止中にGUIが0表示になっても、各ブロックの流体ID・量は削除しません。異種タンクを切り離すなどして正常な接続に戻すと再開します。満タンのタンクを壊す前に元MODの回収仕様を確認してください。",
+  "jei.slime_tech_compat.info.pump_safety": "Pumpには流体のレジストリIDを追加保存します。旧データが動的番号しか持たない場合は、中身を推測・削除せず保留します。可能なら導入前に他MOD流体のPumpを空にしてください。blockNonWaterWorldSources=false（既定）は元のワールド流体源の汲み上げを維持します。trueでは溶岩・MOD流体を含む水以外すべてのワールド流体源を拒否し、水は許可します。流体源の消費やFluid Handler転送を変更する設定ではありません。設定変更後は再起動してください。",
+  "jei.slime_tech_compat.info.grinder": "元の0.1.44は新品に2,000 FEを与え、加工前は15 FEしか確認せず、完了時に120 FEを引きます。fixGrinderEnergy=trueで新品を0 FE開始とし、加工に120 FE以上を要求します。保存済みの電力は維持し、15 FE/tへの変更はしません。初期値false。変更後は再起動が必要です。",
+  "jei.slime_tech_compat.info.converter_placeholder": "0.1.44のEnergy Converterの変換モードは未実装です。このパッチは説明を追加するだけで、FE/RF変換機能は実装しません。選択モードを電力の遮断・制御機構として当てにしないでください。",
+  "jei.slime_tech_compat.info.drain_placeholder": "0.1.44のGeneratorのDrainModeは保存・表示されますが、発電ロジックから参照されていません。このパッチは制約を説明するだけで、未実装の制御機能は追加しません。"
+}

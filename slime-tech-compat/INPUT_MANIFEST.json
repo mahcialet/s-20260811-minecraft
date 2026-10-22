@@ -1,0 +1,247 @@
+{
+  "provenance": "Generated inventory 2026-10-22; requested input manifest was absent. Expected original mod hash independently present in supplied handoff; ZIP expected hash not supplied. Inventory does not mean all mods tested.",
+  "minecraft": "26.1.2",
+  "neoforge_tested": "26.1.2.94",
+  "slime_tech_expected_sha256": "f8ea80558f7f229314fa026311c194aa956f773bc235a76d7598b0a26d3030bb",
+  "reference": {
+    "file": "reference/slime-tech-compat-0.3.0-source.zip",
+    "sha256": "b5a7d203ff0da06e89af1e1ab2074a48613d6ba5f0784f663757b6efdfe14195"
+  },
+  "available_mods": [
+    {
+      "file": "ExplorersCompass-26.1-3.3.0-neoforge.jar",
+      "size": 171903,
+      "sha256": "e6169781fa2692bf670f6fd0aab3cb53f049ed097290208b1552f7fcc73fd59e"
+    },
+    {
+      "file": "GrimoireOfGaia4-26.1.2-7.0.0-alpha.2.jar",
+      "size": 3555721,
+      "sha256": "6a70991cbe4a7daa68fc93b65c6ae71d19e25e6e097e2fddfbd0be48fd43713c"
+    },
+    {
+      "file": "NaturesCompass-26.1-3.3.0-neoforge.jar",
+      "size": 225441,
+      "sha256": "aa58cccc7c40230b75494d53fa21f008e0d76825c7881c5edbc59cf30abb79d5"
+    },
+    {
+      "file": "Neat-26.1.2-48-NEOFORGE.jar",
+      "size": 117232,
+      "sha256": "7507bef2e3e1ba0a0fc2b02933616c906620b490c1a475a3710a214c8566f231"
+    },
+    {
+      "file": "[26.1.2][neoForge]mod_CutAllSMP_v2.5.3.jar",
+      "size": 28070,
+      "sha256": "51f96ea9521daa19788e021d13186c60950ebe35838360665c023aa07c0ad719"
+    },
+    {
+      "file": "appliedenergistics2-26.1.10-beta.jar",
+      "size": 8347899,
+      "sha256": "8412a2208e56989b90e783e0a594c91a955ab8785d7d020fa4d8f342346110f2"
+    },
+    {
+      "file": "arcane_slime_tech-0.1.2.jar",
+      "size": 24988,
+      "sha256": "6e03caac834afa46b3e89f5ab46860799c0edd02caa5d7b057b2f7dedd5361c0"
+    },
+    {
+      "file": "architectury-neoforge-20.0.8.jar",
+      "size": 578150,
+      "sha256": "b484d38754ab2f83d91ff46048328d5f14215784f3ef638e25a09a75f1cbfeeb"
+    },
+    {
+      "file": "balm-neoforge-26.1.2-26.1.2.11.jar",
+      "size": 1070572,
+      "sha256": "b51b9396aa2a3f188e656c713155774e0cdf6c91cdbd618ecb37bb1faaf46032"
+    },
+    {
+      "file": "balm-neoforge-26.1.2-26.1.2.8.jar",
+      "size": 1047393,
+      "sha256": "2c4ed4025e49511fa8ad7626f94b5e90dfef8bb3b84402f1ba1d6c13bfccfbcb"
+    },
+    {
+      "file": "chunkloaders-1.2.9-neoforge-mc26.1.jar",
+      "size": 156041,
+      "sha256": "2c0563c7ca33abd9aa6f48469bc60f6ddef82080f377f486dfacb7c0ce034c3a"
+    },
+    {
+      "file": "cloth-config-26.1.154.jar",
+      "size": 1135993,
+      "sha256": "d9147c8549fedad478bd18e2ddeef172ef290a081f80bd4d242d54e027ecd9d8"
+    },
+    {
+      "file": "colossalchests-26.1.2-neoforge-1.8.16.jar",
+      "size": 282323,
+      "sha256": "c9d037c707a25ce8541d38111ed8f454e6165813fc4fc281ce5194ec4282dec9"
+    },
+    {
+      "file": "craftingstationjei-26.1.1_26.1.2-NeoForge-2.1.2.jar",
+      "size": 72621,
+      "sha256": "0637e7372ea18709851e3ac64a22a058377d86c14d3be015892f2ca928d447fb"
+    },
+    {
+      "file": "cyclopscore-26.1.2-neoforge-1.30.1.jar",
+      "size": 1066064,
+      "sha256": "9c42a061750a9a96f6ccc508cb4469a20a2988d1dbcb641e9d9f40c30d15316e"
+    },
+    {
+      "file": "easy_mob_farm-neoforge-26.1.2-10.11.0.jar",
+      "size": 1002187,
+      "sha256": "1e5983659cc416862f30f5e76be22559dd34a27c84b52c63c4ca0013ae03505c"
+    },
+    {
+      "file": "findme-4.0.0-neoforge.jar",
+      "size": 36769,
+      "sha256": "f4bd358975909410993c3962cdbda668b2975ff157939238c98aa39a1759c475"
+    },
+    {
+      "file": "forgivingvoid-neoforge-26.1.2-26.1.2.1.jar",
+      "size": 79503,
+      "sha256": "a804d0e24119e5997381f599e18c28a656e2364bc76101621c341ef57a0e777a"
+    },
+    {
+      "file": "ftb-industrial-contraptions-26.1.2.9.jar",
+      "size": 2697812,
+      "sha256": "49c54155b49bfde8b114820723ebb3b9676c9b7208256b088695c625327cb61c"
+    },
+    {
+      "file": "gravestone-neoforge-1.0.37+26.1.2.jar",
+      "size": 340884,
+      "sha256": "79cbfea64860d230db4b6ef5f504195907b37138716eef50ac2fa8fd48e9bb8c"
+    },
+    {
+      "file": "guideme-26.1.12-beta.jar",
+      "size": 5192549,
+      "sha256": "14a71c082ba176f5dab58f8bae9edd8baa8f3c636aed4356335fe5855494b2cd"
+    },
+    {
+      "file": "guns++-5.9.5.jar",
+      "size": 25565135,
+      "sha256": "d1d2ba543d4ca1afe9f3b58e39ab39914c59c18f112e907f49bdf25efe0fa738"
+    },
+    {
+      "file": "inventorysorter-26.1.2-24.0.31.jar",
+      "size": 53751,
+      "sha256": "2000a9275e9b00d9016ad76b3bc380dd78d1c9735a6755561599ba1031736455"
+    },
+    {
+      "file": "jei-26.1.2-neoforge-29.16.0.46.jar",
+      "size": 1629272,
+      "sha256": "da75569b2828ea3a4792b66986700a5a2af3325e91b22dba3b8d606e4135abb3"
+    },
+    {
+      "file": "just-hammers-neoforge-26.1.2.1.jar",
+      "size": 109629,
+      "sha256": "335b3fc6c1caaf06c36d8daa4d04d2460202ee46afb17655a12c4624fc4008c6"
+    },
+    {
+      "file": "limacore-26.1.2-2.4.0.jar",
+      "size": 516935,
+      "sha256": "c1ff33ea414d0602a5ea5029aebd09cecbf4b8d5a8f87ee371cde37efc864ffd"
+    },
+    {
+      "file": "ltxi-26.1.2-1.1.3.jar",
+      "size": 2587316,
+      "sha256": "43c9b75d50211c959a91cb978e09cddd812ca55338f1aeb78a059631ba16dfd9"
+    },
+    {
+      "file": "neoforge-1.0.0.jar",
+      "size": 36360,
+      "sha256": "9cf35051a719c274b7423b313c5363d0632a8329d309cefc81eb01bb969b2b70"
+    },
+    {
+      "file": "neoforge-26.1.2.94-installer.jar",
+      "size": 11285430,
+      "sha256": "646b81a7373effe3a45bd180216ec25b1202088e6abfd79d6f020e26254da90b"
+    },
+    {
+      "file": "oreslimes-1.0.108.jar",
+      "size": 894104,
+      "sha256": "d53fd2b38cc485714236f4d8c16b3ba6b6b547af268d0c9284034d9c02298bd0"
+    },
+    {
+      "file": "patchouli-neoforge-26.1-94.jar",
+      "size": 672884,
+      "sha256": "00f9e611930614eacd565916c906a4341363e4a43e271c1a01bda8227707dd49"
+    },
+    {
+      "file": "petting-4.2.3-beta.3-neoforge-26.1.2.jar",
+      "size": 212149,
+      "sha256": "0ffb68b011cc6fc28ebc4dc1da02d993cd74b4010747fb6ca5e6808343172970"
+    },
+    {
+      "file": "refinedstorage-jei-integration-neoforge-2.0.1.jar",
+      "size": 59372,
+      "sha256": "00fd84c8e6164836b9e8b190d545b49a9cb288792984268e13acb776aa5018d1"
+    },
+    {
+      "file": "refinedstorage-neoforge-3.2.1.jar",
+      "size": 4538659,
+      "sha256": "689916dbd53de7215175cbe89c3904b326db3d28460827d8c03d2694e5762ccf"
+    },
+    {
+      "file": "shogi-neoforge-26.1.2-26.1.2.7.jar",
+      "size": 420618,
+      "sha256": "b46242258e790657384ad39a749e337d596540d1f9640b7af079df826517485c"
+    },
+    {
+      "file": "slime_dimensions-0.1.18.jar",
+      "size": 331444,
+      "sha256": "1c6837a60f12580c8692ca0a91c005825cb8c6d72edd3a43a9de554cf764ce75"
+    },
+    {
+      "file": "slime_tech-0.1.44.jar",
+      "size": 397500,
+      "sha256": "f8ea80558f7f229314fa026311c194aa956f773bc235a76d7598b0a26d3030bb"
+    },
+    {
+      "file": "slimequests-1.0.55.jar",
+      "size": 168895,
+      "sha256": "ca9ed4141393c4c2a9500e64fb29ae6045fedd481d66a5cfa38fd8642787b893"
+    },
+    {
+      "file": "solcarrot-26.1-1.19.0.jar",
+      "size": 104047,
+      "sha256": "fae331045f5729808641891dee1d312a6bdc7a85312ef0a05ecff42efacd2b0d"
+    },
+    {
+      "file": "sophisticatedbackpacks-26.1.2-3.25.78.1969.jar",
+      "size": 1151633,
+      "sha256": "f283ffa5c3496459c60d94dbec92ebd1b0e5117c99de23f150eee436ca4450ac"
+    },
+    {
+      "file": "sophisticatedcore-26.1.2-1.4.84.2142.jar",
+      "size": 1696181,
+      "sha256": "ef326595b3176d0510a4d07ef94658ef8a405976c779f165a78034deedd1616f"
+    },
+    {
+      "file": "supermartijn642configlib-1.1.8-neoforge-mc26.1.jar",
+      "size": 206410,
+      "sha256": "1d54834496d013c9d307798f86a01906ea091ceb5981d8a0a9b7cfef63691621"
+    },
+    {
+      "file": "supermartijn642corelib-1.1.24-neoforge-mc26.1.jar",
+      "size": 608667,
+      "sha256": "c5c5706c8cbc662ca51f1cc0546d05ffbea2c40d40b550dde5130a5af8c1614f"
+    },
+    {
+      "file": "travelerscompass-neoforge-26.1.2-4.3.02.jar",
+      "size": 523694,
+      "sha256": "3ed5baff498d3327e483f3c9b556766e2995aeae8c7d690b835fb09df2ac513d"
+    },
+    {
+      "file": "travelertoolbelt-neoforge-26.1.2-1.0.2.jar",
+      "size": 301948,
+      "sha256": "c8491c67affb0acd10a7433d5a4359d4e2600c192473a16089b26743f5c682cd"
+    },
+    {
+      "file": "waystones-neoforge-26.1.2-26.1.2.12.jar",
+      "size": 1160118,
+      "sha256": "e30ab806ecb2bbd1c305f42c6741cda5b2a10634d58698cc86f6b1ca599f9f0a"
+    },
+    {
+      "file": "xaerominimap-neoforge-26.1.2-26.2.0.jar",
+      "size": 2154035,
+      "sha256": "f14239dc41431c9c3242ab0821612c5a30665a8c4144be0016418e365f2634b0"
+    }
+  ]
+}
