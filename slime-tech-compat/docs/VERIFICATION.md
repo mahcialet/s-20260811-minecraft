@@ -44,6 +44,7 @@ Java Corretto25.0.3、Gradle9.6.1(wrapper SHA固定)、ModDev2.0.148、Minecraft
 以下の項目は現在 **NOT_RUN**。コピーしたワールドで次の操作を行い、各項目の結果を記録する。
 
 - ENV-06残り: JEIありclientから専用serverへ参加・退出・再参加。今回UIはsingleplayerの試験world。
+- Tankのサーバー判定: clientの`maxTankNetworkMembers`をserverより小さく設定し、clientだけ連結群の一部チャンクが未ロードの状態でも、正常なserver側転送とGUI表示が維持されること。異種流体を混在させた場合はserver側の転送停止とGUI同期を確認する。安全判定はserver側に限定済みだが、このmultiplayer表示試験は未実施。
 - ENV-08: 改変同版JAR/版不一致を実際に入れた負の起動試験（build/runtime照合は実装済み、正しいJARでの起動を確認）。
 - サバイバル初期資源から初回Gel Ingotまでの全手操作。全機械の採掘速度・不適正ツール・内容入り回収再設置。
 - JEI日本語切替、全情報ページの文字はみ出し、Ore SlimesありRadioactive R/Uの描画、全Mixer投入条件の実tick matrix。

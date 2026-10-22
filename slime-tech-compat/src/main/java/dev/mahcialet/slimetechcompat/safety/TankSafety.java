@@ -35,6 +35,9 @@ public final class TankSafety {
     }
     public static TankPolicy.Decision inspect(FluidTankBlockEntity start) {
         Level level = start.getLevel();
+        // Only the server has authoritative config and network chunk visibility.
+        // Client getters/refresh must retain the upstream synchronized display behavior.
+        if (level != null && level.isClientSide()) return TankPolicy.Decision.allow();
         ArrayList<TankPolicy.Contents> contents = new ArrayList<>();
         if (level == null) {
             contents.add(local(start));
