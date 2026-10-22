@@ -1,0 +1,9 @@
+[21:51:41] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=file:<local-path> Service=FML Env=CLIENT
+INFO: Slime Tech Compat 0.4.0-dev loaded; target SHA-256 verified. Back up before migration.
+[21:51:49] [Server thread/INFO] [minecraft/IntegratedServer]: Starting integrated minecraft server version 26.1.2
+[21:51:49] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[21:51:52] [Render thread/INFO] [minecraft/AdvancementTree]: Loaded 2 advancements
+[21:52:18] [Server thread/INFO] [minecraft/MinecraftServer]: Stopping server
+[21:52:19] [Server thread/INFO] [minecraft/MinecraftServer]: ThreadedAnvilChunkStorage: All dimensions are saved
+[21:52:21] [Render thread/INFO] [minecraft/Minecraft]: Stopping!
+BUILD SUCCESSFUL in 45s

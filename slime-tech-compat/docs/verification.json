@@ -1,0 +1,61 @@
+{
+  "version": "0.4.0-dev",
+  "release_stage": "pre-release; acceptance not complete",
+  "date": "2026-10-22",
+  "historical_stub_results_counted": false,
+  "runtime_records": [
+    {
+      "id": "baseline",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=97",
+      "evidence": "run-baseline/compat-test-result.txt"
+    },
+    {
+      "id": "patched",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=271",
+      "evidence": "run-tests/compat-test-result.txt"
+    },
+    {
+      "id": "options_on",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=271",
+      "evidence": "run-tests-options/compat-test-result.txt"
+    },
+    {
+      "id": "migration_reload",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=5",
+      "evidence": "run-migration/compat-test-result.txt"
+    },
+    {
+      "id": "packaged",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=272",
+      "evidence": "run-packaged/compat-test-result.txt"
+    },
+    {
+      "id": "oreslimes",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=271",
+      "evidence": "run-tests-extra-oreslimes/compat-test-result.txt"
+    },
+    {
+      "id": "combined",
+      "stage": "real NeoForge dedicated server / real Mixin except baseline",
+      "status": "PASS",
+      "result": "PASS assertions=271",
+      "evidence": "run-tests-extra-ftbic-ltxi-oreslimes-refinedstorage/compat-test-result.txt"
+    }
+  ],
+  "policy_assertions": 33,
+  "client_with_jei": "PASS singleplayer + Gel Ingot R + Mixer U; dedicated join/rejoin NOT_RUN",
+  "client_without_jei": "PASS singleplayer inventory and clean exit",
+  "unverified": "See docs/VERIFICATION.md NOT_RUN list"
+}

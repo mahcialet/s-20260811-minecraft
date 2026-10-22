@@ -1,0 +1,17 @@
+# 設計判断
+
+- 対象を元JAR全体のSHA-256とNeoForge26.1.2.94へ固定する。ビルド時とMod構築時に拒否し、指定JARに適用対象を限定する。Mixinはrequiredかつ個別require/expect/allow。
+- 推測不能な保存データは保留する。旧動的番号を現セッションの番号へ読み替えない。未来schemaは原入力全体を残し、充電も拒否して保存snapshotとの差分消失を防ぐ。
+- Tankロード時は不正な数量も原値を保持し、旧動的番号は未解決として保留する。固定旧ID1〜4のみ移行。未解決番号は追加診断キーで保存する。
+- ST-022はかまど出力処理内のinsert呼出だけをRedirectする。保存領域全体のinsert/extract粒度を維持し、空きに収まる整数個の1,000mBだけを挿入する。元の単バケツ条件を維持する。
+- ST-007/008は既定OFFの任意設定。採掘Tier、レシピ、処理量は元の値を維持する。
+- ST-009は、座標別かまど残量を破壊時に消去するか保持するかを決めてから修正方針を確定する。ST-010は、塊移動による被害と責務境界を先に確定する。両項目は現時点では元の処理を維持する。
+- JEIは表示専用でクライアント任意依存。専用サーバー試験はJEIなしの構成で実施する。
+
+## レビュー
+別担当が安全処理・Furnace・Grinder・hash gateをレビュー。未来schemaの充電損失に関する指摘を採用し、拒否ガードを追加。冗長な単バケツRedirect指摘は採用して削除。実行時hash照合の古いREADME記述も更新。JEI担当自身のJEI変更確認は自己点検として区別する。
+
+## 実Capabilityの追加判断
+実NeoForgeのabortで元adapterの即時変更が取り消されないことを再現。Tank/Pumpのfactoryだけをwrapper化し、BE単位で共有するSnapshotJournalで量・ID・表示値を保存する。側面毎のjournalではnested rollbackが一致しないため共有する。元データに保持できないfluid component付き転送は拒否する。rollback完了前にネットワーク集計を再計算せず、表示snapshotを復元する。
+
+delegateのsetChanged等の通知はtransaction中にも発生し得る。量・ID・表示の復元は試験済みだが、dirty通知やredstone等の観測可能な副作用の完全な取消は未検証。対象外の機械・Energy capabilityへこの保証を拡張しない。

@@ -1,0 +1,259 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev' version '2.0.148'
+}
+group = 'dev.mahcialet'
+version = '0.4.0-dev'
+base { archivesName = 'slime-tech-compat' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
+def upstreamJar = file('../mods/slime_tech-0.1.44.jar')
+def jeiJar = file("../mods/jei-26.1.2-neoforge-${jei_version}.jar")
+// Explicit test-only extras; never add every jar from the player's mods folder.
+def extraCatalog = [
+    oreslimes: ['oreslimes-1.0.108.jar'],
+    refinedstorage: ['refinedstorage-neoforge-3.2.1.jar'],
+    ftbic: ['ftb-industrial-contraptions-26.1.2.9.jar'],
+    ltxi: ['ltxi-26.1.2-1.1.3.jar', 'limacore-26.1.2-2.4.0.jar'],
+    limacore: ['limacore-26.1.2-2.4.0.jar'],
+]
+def extraNames = providers.gradleProperty('compatExtraMods').getOrElse('').split(',').collect { it.trim() }.findAll { it }
+extraNames.each { if (!extraCatalog.containsKey(it)) throw new GradleException("Unknown compatExtraMods entry: ${it}; allowed: ${extraCatalog.keySet()}") }
+def extraJars = extraNames.collectMany { extraCatalog[it] }.unique().collect { file("../mods/${it}") }
+extraJars.each { if (!it.isFile()) throw new GradleException("Missing explicitly requested test mod: ${it}") }
+def testSuffix = extraNames ? '-extra-' + extraNames.unique().sort().join('-') : '' 
+
+sourceSets {
+    packagedRun {
+        runtimeClasspath += sourceSets.test.output
+    }
+    clientRun {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+configurations {
+    packagedRunRuntimeOnly.extendsFrom runtimeOnly, testRuntimeOnly
+    clientRunImplementation.extendsFrom implementation
+    clientRunRuntimeOnly.extendsFrom runtimeOnly
+}
+neoForge {
+    version = project.neo_version
+    addModdingDependenciesTo sourceSets.packagedRun
+    addModdingDependenciesTo sourceSets.clientRun
+    addModdingDependenciesTo sourceSets.test
+    mods {
+        slime_tech_compat { sourceSet sourceSets.main }
+        slime_tech_compat_tests { sourceSet sourceSets.test }
+    }
+    runs {
+        configureEach { loadedMods = [mods.slime_tech_compat] }
+        client {
+            client()
+            sourceSet = sourceSets.clientRun
+            gameDirectory = file('run-client')
+            def quickPlayWorld = providers.gradleProperty('compatQuickPlayWorld').getOrElse('')
+            if (quickPlayWorld) {
+                programArgument '--quickPlaySingleplayer'
+                programArgument quickPlayWorld
+            }
+        }
+        compatTestServer {
+            server()
+            sourceSet = sourceSets.test
+            loadedMods = [mods.slime_tech_compat, mods.slime_tech_compat_tests]
+            gameDirectory = file('run-tests' + testSuffix)
+            programArgument '--nogui'
+        }
+        packagedTestServer {
+            server()
+            sourceSet = sourceSets.packagedRun
+            loadedMods = [mods.slime_tech_compat_tests]
+            gameDirectory = file('run-packaged' + testSuffix)
+            programArgument '--nogui'
+            systemProperty 'compat.packaged', 'true'
+        }
+        migrationTestServer {
+            server()
+            sourceSet = sourceSets.test
+            loadedMods = [mods.slime_tech_compat, mods.slime_tech_compat_tests]
+            gameDirectory = file('run-migration' + testSuffix)
+            programArgument '--nogui'
+            systemProperty 'compat.migration', 'true'
+        }
+        migrationReloadTestServer {
+            server()
+            sourceSet = sourceSets.test
+            loadedMods = [mods.slime_tech_compat, mods.slime_tech_compat_tests]
+            gameDirectory = file('run-migration' + testSuffix)
+            programArgument '--nogui'
+            systemProperty 'compat.migration', 'true'
+        }
+        optionsTestServer {
+            server()
+            sourceSet = sourceSets.test
+            loadedMods = [mods.slime_tech_compat, mods.slime_tech_compat_tests]
+            gameDirectory = file('run-tests-options' + testSuffix)
+            programArgument '--nogui'
+        }
+        baselineTestServer {
+            server()
+            sourceSet = sourceSets.test
+            loadedMods = [mods.slime_tech_compat_tests]
+            gameDirectory = file('run-baseline' + testSuffix)
+            programArgument '--nogui'
+            systemProperty 'compat.baseline', 'true'
+        }
+        server {
+            server()
+            gameDirectory = file('run-server')
+            programArgument '--nogui'
+        }
+    }
+}
+dependencies {
+    compileOnly files(upstreamJar)
+    runtimeOnly files(upstreamJar)
+    compileOnly files(jeiJar)
+    if (!providers.gradleProperty('compatWithoutJei').map { it.toBoolean() }.getOrElse(false)) {
+        clientRunRuntimeOnly files(jeiJar)
+    }
+    testImplementation files(upstreamJar)
+    testRuntimeOnly files(extraJars)
+    packagedRunRuntimeOnly files(tasks.named('jar').flatMap { it.archiveFile })
+}
+tasks.register('verifyInputJars') {
+    inputs.files(upstreamJar, jeiJar)
+    doLast {
+        def expected = [
+            (upstreamJar): 'f8ea80558f7f229314fa026311c194aa956f773bc235a76d7598b0a26d3030bb',
+        ]
+        expected.each { jar, sha256 ->
+            if (!jar.isFile()) throw new GradleException("Missing required input: ${jar}")
+            def digest = java.security.MessageDigest.getInstance('SHA-256').digest(jar.bytes).encodeHex().toString()
+            if (digest != sha256) throw new GradleException("SHA-256 mismatch: ${jar.name}; expected ${sha256}, got ${digest}")
+        }
+        if (!jeiJar.isFile()) throw new GradleException("Missing required JEI compile input: ${jeiJar}")
+    }
+}
+tasks.withType(JavaCompile).configureEach {
+    dependsOn 'verifyInputJars'
+    options.encoding = 'UTF-8'
+}
+tasks.named('jar', Jar) {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from('LICENSE')
+}
+tasks.named('wrapper', Wrapper) { distributionType = Wrapper.DistributionType.BIN }
+tasks.register('policyTest', JavaExec) {
+    dependsOn testClasses
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'dev.mahcialet.slimetechcompat.policytests.PolicyTests'
+}
+tasks.named('check') { dependsOn 'policyTest' }
+
+// These runs create isolated worlds; no existing game directory is reused.
+['Compat': 'run-tests', 'Options': 'run-tests-options', 'Baseline': 'run-baseline', 'Migration': 'run-migration', 'Packaged': 'run-packaged'].collectEntries { profile, directory -> [(profile): directory + testSuffix] }.each { profile, directoryName ->
+    def prepare = tasks.register("prepare${profile}Tests") {
+        if (profile == 'Migration') dependsOn 'runBaselineTestServer'
+        doLast {
+            def directory = file(directoryName)
+            directory.mkdirs()
+            if (profile == 'Migration') {
+                def source = file('run-baseline' + testSuffix + '/compat-test-world')
+                if (!new File(source, 'level.dat').isFile()) throw new GradleException('Baseline world fixture missing')
+                // Only the isolated, generated migration fixture is replaced.
+                def destination = new File(directory, 'compat-test-world')
+                delete destination
+                copy { from source; into destination }
+            }
+            def configDirectory = new File(directory, 'config')
+            configDirectory.mkdirs()
+            new File(configDirectory, 'slime-tech-compat.properties').text = """blockNonWaterWorldSources=${profile == 'Options'}
+fixGrinderEnergy=${profile == 'Options'}
+maxTankNetworkMembers=512
+"""
+            delete new File(directory, 'compat-test-result.txt')
+            new File(directory, 'server.properties').text = """server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+view-distance=2
+simulation-distance=2
+spawn-protection=0
+pause-when-empty-seconds=0
+level-name=compat-test-world
+level-type=minecraft:flat
+generator-settings={"biome":"minecraft:plains","layers":[{"block":"minecraft:bedrock","height":1},{"block":"minecraft:dirt","height":2},{"block":"minecraft:grass_block","height":1}],"structures":{}}
+"""
+        }
+    }
+    tasks.named("run${profile}TestServer").configure {
+        dependsOn prepare
+        doLast {
+            def result = file("${directoryName}/compat-test-result.txt")
+            if (!result.isFile() || !(result.text.trim() ==~ /PASS assertions=[1-9][0-9]*/)) {
+                throw new GradleException("Runtime assertions did not pass; inspect ${directoryName}/logs/latest.log and compat-test-result.txt")
+            }
+        }
+    }
+}
+
+// Test sources contain a standalone policy runner and a NeoForge runtime mod, not JUnit.
+tasks.named('test', Test) { enabled = false }
+
+// Explicit allowlist excludes original mods, stubs, analysis and inherited evidence.
+tasks.register('sourcesZip', Zip) {
+    archiveClassifier = 'source'
+    destinationDirectory = layout.buildDirectory.dir('libs')
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from('.') {
+        include 'src/main/**', 'src/test/**', 'gradle/**', 'gradlew', 'gradlew.bat'
+        include 'build.gradle', 'settings.gradle', 'gradle.properties', '.gitignore', 'LICENSE'
+        include 'README.md', 'README.en.md', 'CHANGELOG.md', 'INPUT_MANIFEST.json'
+        include 'docs/IMPLEMENTATION.md', 'docs/VERIFICATION.md', 'docs/verification.json'
+        include 'docs/exec-plans/slime-tech-compat-hardening.md', 'examples/**', 'scripts/**'
+        include 'docs/MIGRATION.md', 'docs/ISSUES.md', 'docs/ADR.md', 'docs/CHATGPT_HANDOFF.md'
+        include 'ISSUES.md', 'ACCEPTANCE_TESTS.md', 'ADR.md', 'CHATGPT_HANDOFF.md', 'docs/evidence/current-*'
+    }
+}
+tasks.register('artifactHashes') {
+    dependsOn 'jar', 'sourcesZip'
+    def artifacts = files(tasks.named('jar').flatMap { it.archiveFile }, tasks.named('sourcesZip').flatMap { it.archiveFile })
+    inputs.files(artifacts)
+    outputs.file(layout.buildDirectory.file('libs/SHA256SUMS'))
+    doLast {
+        def target = layout.buildDirectory.file('libs/SHA256SUMS').get().asFile
+        target.parentFile.mkdirs()
+        target.text = artifacts.files.sort { it.name }.collect {
+            java.security.MessageDigest.getInstance('SHA-256').digest(it.bytes).encodeHex().toString() + '  ' + it.name
+        }.join('\n') + '\n'
+    }
+}
+
+// A second real server start reuses the migrated world without recopying baseline data.
+tasks.named('runMigrationReloadTestServer').configure {
+    mustRunAfter 'runMigrationTestServer'
+    doFirst {
+        def directory = file('run-migration' + testSuffix)
+        if (!new File(directory, 'compat-test-world/level.dat').isFile()) {
+            throw new GradleException('Run runMigrationTestServer before runMigrationReloadTestServer')
+        }
+        delete new File(directory, 'compat-test-result.txt')
+    }
+    doLast {
+        def directory = file('run-migration' + testSuffix)
+        def result = new File(directory, 'compat-test-result.txt')
+        if (!result.isFile() || !(result.text.trim() ==~ /PASS assertions=[1-9][0-9]*/)) {
+            throw new GradleException("Migration reload assertions did not pass; inspect ${directory}/logs/latest.log")
+        }
+    }
+}
+
+// This run deliberately excludes the development main output: FML must discover the built jar.
+tasks.named('runPackagedTestServer').configure {
+    dependsOn 'jar', 'testClasses'
+}
