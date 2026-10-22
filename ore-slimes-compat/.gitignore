@@ -1,0 +1,13 @@
+/.gradle/
+/build/
+/run/
+/run-tests/
+/run-statistics/
+/run-cows/
+/run-creature-inventory/
+/run-creature-coverage/
+/run-creature-followup/
+/run-creature-low-floor/
+/run-creature-normal-followup/
+
+/run-phase2-*/

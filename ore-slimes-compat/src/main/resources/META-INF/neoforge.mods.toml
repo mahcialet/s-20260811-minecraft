@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[11,)"
+license="MIT"
+[[mods]]
+modId="ore_slimes_compat"
+version="1.0.0"
+displayName="Ore Slimes Compat"
+description='''Server-side rate limits for Ore Slimes 1.0.108's backup world spawner.'''
+[[mixins]]
+config="ore_slimes_compat.mixins.json"
+[[dependencies.ore_slimes_compat]]
+modId="minecraft"
+type="required"
+versionRange="[26.1.2]"
+side="BOTH"
+[[dependencies.ore_slimes_compat]]
+modId="neoforge"
+type="required"
+versionRange="[26.1.2.71,26.2)"
+side="BOTH"
+[[dependencies.ore_slimes_compat]]
+modId="oreslimes"
+type="required"
+versionRange="[1.0.108]"
+ordering="AFTER"
+side="BOTH"
