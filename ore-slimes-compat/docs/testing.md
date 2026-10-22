@@ -38,6 +38,9 @@ Superflat は `phase2FlatBiome=taiga` が既定で、`desert` または `plains`
 この条件では周辺チャンクと個体の読み込み完了を待つ `prepared-v2` を使用する。
 `rtk proxy python3 scripts/phase2-series.py --through 5` で3設定×3地形×5回を実行できる。
 完了済みの試行は証拠を検査して再利用し、同時実行は最大2サーバーとする。
+`phase2-result.txt` が `COMPLETE` の試行を再利用候補とし、`FAIL`・空の記録・記録がない試行は再実行する。
+完了記録の証拠に不整合があれば、監査で停止して記録を保持する。
+再開処理の回帰試験は `python3 -B -m unittest discover -s scripts -p test_phase2_series.py -v` で実行できる。
 継続時は `--through 10` または `--through 20` を使う。
 事前評価基準は [反復比較の条件](phase2-results.md#複数seedによる追加比較の事前条件)、各20回・計180観測の結果は [反復比較の結果](phase2-results.md#prepared-v2で実施した反復比較) に記録する。
 

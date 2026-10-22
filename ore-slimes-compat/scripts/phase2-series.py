@@ -76,7 +76,8 @@ def run(through, jobs):
             for variant in order:
                 key = trial, terrain, variant
                 path = directory(*key)
-                if (path / 'phase2-result.txt').exists():
+                result_file = path / 'phase2-result.txt'
+                if result_file.is_file() and result_file.read_text().strip() == 'COMPLETE':
                     audit(*key)
                     print(json.dumps({'event': 'reuse', 'trial': trial, 'terrain': terrain, 'variant': variant}), flush=True)
                 else:
