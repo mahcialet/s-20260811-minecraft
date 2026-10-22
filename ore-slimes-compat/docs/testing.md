@@ -1,5 +1,52 @@
 # 検証
 
+Phase 2 のスポーン方針は、制御試験と通常 tick による継続観測で確認する。
+制御試験では補助経路の policy と標準スポーン重みの調整を含む341項目を確認し、
+2026-10-22に `PASS assertions=341` を得た。
+通常地形・Superflatの登録と生成条件は [Phase 2調査](phase2-investigation.md)、
+個体数の比較と既定値の判断は [Phase 2実測結果](phase2-results.md) にまとめる。
+
+継続観測は、元Mod、Phase 1、Phase 2をそれぞれ新規ワールドで実行する。
+`phase2Profile` に `upstream` / `phase1` / `phase2`、`phase2Terrain` に `normal` / `flat`、
+`phase2Players` に `1` / `2` を指定する。
+Phase 2 は `phase2WeightScale=balanced`（倍率0.01）が既定で、`original` を指定すると元の重みで比較できる。
+Superflat は `phase2FlatBiome=taiga` が既定で、`desert` または `plains` も指定できる。
+
+均等重みの比較には `phase2WeightScale=equal-all` または `equal-ore` を指定する。
+`equal-all` は各バイオームのCREATURE候補を各重み1、`equal-ore` はOre Slime 13種類を各重み7にする。
+後者は通常動物の重みを保持し、Ore合計91を既定設定の88に近づける比較である。
+元の重み0は0を保持し、候補の種類・順序・群れサイズ・配置条件はそのまま使う。
+測定用Modが変更を適用し、配布用Modの既定設定は維持する。
+
+```sh
+./gradlew runPhase2Server -Pphase2Profile=phase2 -Pphase2Terrain=normal -Pphase2Players=1
+./gradlew runPhase2Server -Pphase2Profile=phase2 -Pphase2Terrain=flat -Pphase2Players=1
+```
+
+各実行は `run-phase2-<profile>-<terrain>-<players>/` を基本とする専用ディレクトリに、200 tickごとの個体数、
+10/30/60分相当の集計、生成理由と加入個体の記録を保存する。
+倍率0.01の実行には末尾に `-balanced` が付き、taiga以外のflatではterrainの後にバイオーム名が入る。
+均等条件の実行には、それぞれ `-equal-all`、`-equal-ore` が付く。
+例: `run-phase2-phase2-flat-desert-1-balanced/`。
+`phase2-result.txt` の `COMPLETE` は72,000 tickの観測完了を表し、共存の判定には結果の内容を使う。
+観測開始時に個体数をリセットし、その後は移動・死亡・自然生成を継続して観測する。
+初期地形は元のまま使い、昼・晴天を固定する。高速tick実行なので、時間は20 TPS換算で扱う。
+`upstream` は互換Mod自体を外し、元Modとテスト用Modだけで観測する。
+
+反復比較では `-Pphase2Trial=1`〜`20` を指定すると、上記の各結果ディレクトリに
+`-trial01`〜`-trial20` を付けて保存し、試行番号に対応したseedを使う。
+この条件では周辺チャンクと個体の読み込み完了を待つ `prepared-v2` を使用する。
+`rtk proxy python3 scripts/phase2-series.py --through 5` で3設定×3地形×5回を実行できる。
+完了済みの試行は証拠を検査して再利用し、同時実行は最大2サーバーとする。
+継続時は `--through 10` または `--through 20` を使う。
+事前評価基準は [反復比較の条件](phase2-results.md#複数seedによる追加比較の事前条件)、各20回・計180観測の結果は [反復比較の結果](phase2-results.md#prepared-v2で実施した反復比較) に記録する。
+
+以下では、個別機能の確認方法と、Phase 1で実施した観測を記録する。
+従来の `runCompatStatisticsServer` と牛の追加観測は、Phase 1の条件を再現するため
+`backupSpawnerMode = "ALL_WORLDS"` と `standardSpawnWeightScale = 1.0` を準備処理で設定する。
+自然湧きの網羅試験と登録一覧の取得は、各実行ディレクトリの設定を使う。
+新規ディレクトリでは現在の初期値 `DISABLED`・倍率0.01となるため、再実行前に設定を確認する。
+
 ## 自動検証
 
 独自スポーナーの制御条件を検証するには、次のコマンドを実行する。
@@ -17,10 +64,15 @@ Java 25、NeoForge 26.1.2.71、`../mods/oreslimes-1.0.108.jar` を使う。
 サーバーを停止する。Gradle はこの結果を確認する。
 開発起動では NeoForge が IDE 用の EULA 処理を用いる。使用するのは隔離したテストワールドである。
 
-2026-10-22 の検証結果: `runCompatTestServer` 成功、`PASS assertions=232`。
+2026-10-22 の最新検証結果: `runCompatTestServer` 成功、`PASS assertions=341`。
+Phase 1で確認した232項目を基に、policyと標準重みの調整を検証項目へ加えた。
 次を実際の NeoForge サーバーと変換済み Ore Slimes 1.0.108 で確認した。
 
-- 初期設定で120000回の tick handler 呼び出し（100周期）後にも Ore Slime が存在し上限以内。
+- 3種類のpolicyとディメンションのgeneratorに基づく補助経路の選択。
+- 起動後の標準スポーン一覧でOre 13種類の重み合計88、群れサイズ・並び順・他種の重みの維持。
+- 倍率1.0による元の重み、元の重み0の維持、通常Slimeの重み500。
+
+- Phase 1の補助経路設定で120000回の tick handler 呼び出し（100周期）後にも Ore Slime が存在し上限以内。
 - 強制確率の100 passで近傍3体上限、interval前の追加なし、確率0・上限0・enabled=false。
 - 20 / 100 blocks間隔の FakePlayer 2名で、1 passの追加が倍増せず共有上限を維持。
 - Minecraft の実 census による CREATURE cap で補充抑制。
@@ -80,13 +132,13 @@ JSONLと完了ファイルは次回の実行で更新される。過去のテス
 結果は各条件下の経過観測として扱い、人数だけによる増加率やcompat導入前後の改善率の算出には使わない。
 Rabbit用のdesert、地下やswampでの通常Slime自然生成、関連4 Modの組合せは、別の試験条件で扱う。
 
-2026-10-22 の実行は3条件とも120 samplesを記録し、`COMPLETE` で終了した。
+2026-10-22 のPhase 1実行は3条件とも120 samplesを記録し、`COMPLETE` で終了した。
 同時に `build` と既存の制御試験も成功し、`PASS assertions=232` を確認した。
 
 | 条件 | 自然スポーン対象チャンク数 | Ore Slime加入総数（全経路） | 通常動物の観測 |
 | --- | --- | --- | --- |
-| 初期設定・1人 | 289 | 40 | Pig加入4、NATURALの生成処理4 |
-| 初期設定・2人 | 306 | 44 | Chicken加入2、生成理由はJOCKEY。通常動物の自然湧き成功とは数えない |
+| Phase 1初期設定・1人 | 289 | 40 | Pig加入4、NATURALの生成処理4 |
+| Phase 1初期設定・2人 | 306 | 44 | Chicken加入2、生成理由はJOCKEY。通常動物の自然湧き成功とは数えない |
 | 独自スポーナー無効・2人 | 306 | 41 | Sheep加入4、NATURALの生成処理4 |
 
 無効化後のOre Slime加入は、独自スポーナー以外の生成経路が残ることと整合する。
@@ -101,7 +153,7 @@ Rabbit用のdesert、地下やswampでの通常Slime自然生成、関連4 Mod�
 ./gradlew runCompatStatisticsServer -PobserveCows=true
 ```
 
-`run-cows/` の新規ワールドで初期設定・1人の観測を行う。
+`run-cows/` の新規ワールドでPhase 1の補助経路設定・1人の観測を行う。
 24000 ticksを1区間とする。牛を確認できなければ区間の間でMobを除去し、
 最大10区間まで観測を続ける。
 `NATURAL` の生成処理、加入イベント、後続sampleでの生存確認が同じUUIDで揃った牛を
@@ -146,7 +198,8 @@ Minecraft 26.1.2 / Ore Slimes 1.0.108 / 本compatの構成ではCREATUREは44種
 ```
 
 `run-creature-coverage/` に専用の新規ワールドを作る。通常のサーバーtickと
-自然スポーン処理を使い、次の地形条件を順に試す。候補一覧と抽選重みは元の値を使う。
+自然スポーン処理を使い、次の地形条件を順に試す。候補一覧には、起動時のBiome Modifierと
+`standardSpawnWeightScale` を反映した登録値を使う。
 バイオームは実レジストリの値を使うが、床とバイオーム配置は試験用に整える。
 
 | バイオーム | 床 | Vanillaの対象 |
@@ -168,7 +221,8 @@ Gold、Emerald、Diamond、Magicの13種類を確認対象とする。
 最初の条件でVanillaの対象とOre Slime全種を待ち、その後の条件へ進む。
 Overworldは床Y64・足元Y65、Strider用には実Netherの天井上に床Y199・足元Y200の溶岩平台を作る。
 観測対象は近傍チャンク全体であり、Nether内の既存の溶岩で生成した個体も含む。
-昼・晴天を固定し、疑似プレイヤーは1人、compatは初期設定を使う。
+昼・晴天を固定し、疑似プレイヤーは1人とする。補助経路の頻度・距離は初期値を使い、
+policyと標準重みの倍率は実行ディレクトリの設定で確認する。
 
 自然湧きの試行を続けられるよう、400 ticksごとの観測区間の間でMobを除去して枠を空ける。
 各条件の観測は最大2000区間までとする。上限に達しても未確認の種類が残った場合は、
@@ -185,7 +239,8 @@ Overworldは床Y64・足元Y65、Strider用には実Netherの天井上に床Y199
 
 この試験で確認するのは、各種類が通常の自然生成経路を通って出現することである。
 自然地形での出現頻度、長時間の個体数推移、全種類の同時共存を判定するには、別の観測が必要である。
-Ore Slimeのbiome抽選重みの合計は8990であり、通常動物の抽選頻度を下げる要因になる。
+Phase 1で使ったOre Slimeのbiome抽選重み合計は8990であり、通常動物の抽選頻度を下げる要因になる。
+Phase 2の初期値では、13種類すべてを含む一覧の合計を88に調整する。
 独自補充の抑制と、この自然湧き側の重みは別の設定・処理である。
 
 未確認の種類だけを別実行で追試する場合は、対象IDを指定する。
@@ -206,12 +261,13 @@ Ore Slimeのbiome抽選重みの合計は8990であり、通常動物の抽選�
 ```
 
 この場合は `run-creature-low-floor/` に結果を保存し、床高度を `overworldFloorY` に記録する。
-高さの抽選による配置失敗を減らすための地形条件であり、種別の抽選重みと生成処理は元のまま使う。
+高さの抽選による配置失敗を減らすための地形条件であり、種別の抽選重みは設定を反映した登録値、生成処理は標準のものを使う。
 標準高度の結果とは分けて扱う。海面以上が必要なOcelotと、Nether専用のStriderの条件には使わない。
 
 #### 2026-10-22 の実測結果
 
-初回の網羅試験と種別ごとの追試を合わせて、**34種類すべて**を確認した。
+Phase 1の設定で行った初回の網羅試験と種別ごとの追試を合わせて、**34種類すべて**を確認した。
+この記録の標準重みは元の倍率1.0であり、Phase 2の倍率0.01による全34種類の再確認とは区別する。
 実レジストリの自然湧き対象34種類と、証拠の種別集合が一致し、未確認は0種類である。
 すべての証拠について、生成時刻より後のtickでの生存と、
 稼働チャンク・近傍プレイヤーの存在を照合した。
@@ -234,6 +290,26 @@ Ore Slimeのbiome抽選重みの合計は8990であり、通常動物の抽選�
 この統合結果は当日の記録として保持する。通常の再実行では実行ごとの結果ファイルを更新するため、
 新しい実行の成否はそちらで確認する。
 専用経路の10種類については、依頼範囲に従って実装調査による一覧を成果とし、動作は未実測である。
+
+### 通常generator上でのOre標準経路の制御試験
+
+通常generatorで作成したワールドに試験用の床とバイオームを用意し、Oreの1種類を確認する。
+
+```sh
+./gradlew runCompatStatisticsServer -PcreatureCoverage=true -PcoverageTarget=oreslimes:stone_slime -PnormalCoverage=true
+```
+
+`run-creature-normal-followup/` に新規通常ワールドを作り、`DISABLED`・倍率0.01を設定する。
+実際の `NoiseBasedChunkGenerator` を確認し、床Y199・足元Y200の草地を整備する。
+対象は登録済みのOre Slime 1種類で、`compactCoverage` との併用は対象外とする。
+通常tickで生成を待ち、400 tickの区間ごとに個体数をリセットする。
+成功の判定は、同一UUIDの `NATURAL` 生成・加入・後続tickでの生存による。
+結果にはgenerator、policy、倍率、床高度を記録する。
+
+この試験は通常generatorでも標準生成経路が成立することを確認するためのものだ。
+通常地形をそのまま使った出現頻度と継続的な共存の評価には、冒頭の `runPhase2Server` の観測を使う。
+地点・seedを変えて観測を重ね、単発の結果と継続的な傾向を区別する。
+実行結果は [Phase 2実測結果](phase2-results.md) にまとめる。
 
 ## 診断ログの有効化と確認先
 
@@ -278,9 +354,11 @@ Minecraft 26.1.2 / NeoForge 26.1.2.71 / Ore Slimes 1.0.108 / 本 compat を使�
 実際の Modpack での検証時は、関連する Slime Tech / Arcane Slime Tech /
 Slime Dimensions / Slimequests の4 Modと、他 Modの正確なバージョンも記録する。
 
+以下の試験1〜6は、Phase 1から引き継ぐ補助経路の受け入れ確認である。
 各試験は独立して実施する。試験1〜6を始めるたびに、
 [配布初期設定](../config/ore_slimes_compat-server.toml) に戻してから、当該試験で指定された項目を変更し、
-サーバーを再起動する。診断用の `debugSpawner=true` は維持してよい。
+補助経路を確認するため `backupSpawnerMode = "ALL_WORLDS"` を設定し、サーバーを再起動する。
+標準重みの倍率も記録する。診断用の `debugSpawner=true` は維持してよい。
 前の試験の設定や個体数を引き継がず、各試験を独立した状態で始めるため、必要に応じて比較用ワールドの複製を使う。
 
 テストワールドで `doMobSpawning=true`、昼、適切な難易度、自然湧き可能な
@@ -289,7 +367,7 @@ Slime Dimensions / Slimequests の4 Modと、他 Modの正確なバージョン�
 時刻、個体種、出現位置、近傍数、設定、既存 CREATURE 数を記録する。
 [診断ログの手順](#診断ログの有効化と確認先) に従って独自追加のログを収集すると、由来を区別しやすい。
 
-1. **Single player / 初期設定**: 固定地点で30–60分待機する。
+1. **Single player / 補助経路の初期頻度**: 固定地点で30–60分待機する。
    待機地点から探索される範囲内に slime chunk があり、その地表に生成可能な床と空間があることを先に確認する。
    独自 Ore Slime 生成には、適切な床に加えて slime chunk が必要である。
    許可される床は [調査結果の独自 spawn flow](investigation.md#3-独自-spawn-flow) を参照。

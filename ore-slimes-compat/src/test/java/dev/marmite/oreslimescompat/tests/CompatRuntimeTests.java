@@ -5,6 +5,7 @@ import com.jeremiah.oreslimes.world.OreSlimeWorldSpawner;
 import com.jeremiah.oreslimes.world.OreSlimeSpawnRules;
 import com.mojang.authlib.GameProfile;
 import dev.marmite.oreslimescompat.SpawnerConfig;
+import dev.marmite.oreslimescompat.OreSlimeWeightModifier;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,7 +38,12 @@ public final class CompatRuntimeTests {
     private static final AABB AREA = new AABB(400, 180, 400, 700, 230, 700);
     private static int assertions;
 
-    public CompatRuntimeTests() {
+    public CompatRuntimeTests(net.neoforged.bus.api.IEventBus bus) {
+        EqualWeightExperiment.register(bus);
+        if (Boolean.getBoolean("compat.phase2")) {
+            new Phase2Statistics();
+            return;
+        }
         if (Boolean.getBoolean("compat.creatureCoverage")) {
             new CreatureCoverage();
             return;
@@ -69,6 +75,9 @@ public final class CompatRuntimeTests {
         check(SpawnerConfig.MAX_NEARBY.get() == 3, "default nearby cap");
         check(SpawnerConfig.CHANCE.get() == 0.35, "default chance");
         check(!SpawnerConfig.VANILLA.get(), "default vanilla injection disabled");
+        check(SpawnerConfig.BACKUP_MODE.get() == SpawnerConfig.BackupSpawnerMode.DISABLED,
+                "default policy uses standard spawning only");
+        standardSpawnWeights(level);
         clear(level);
         // Elevated platform avoids existing terrain, caves, and world-generation mobs.
         for (int x = 440; x <= 620; x++) for (int z = 440; z <= 620; z++) {
@@ -79,6 +88,9 @@ public final class CompatRuntimeTests {
         level.addNewPlayer(player);
         level.getRandom().setSeed(384731L);
         census(level);
+        spawnPolicies(level, player);
+        standardChunkRules(level);
+        SpawnerConfig.BACKUP_MODE.set(SpawnerConfig.BackupSpawnerMode.ALL_WORLDS);
         counter(0);
         for (int tick = 0; tick < 120000; tick++) tick(level);
         check(oreCount(level) > 0 && oreCount(level) <= 3, "default chance and attempts retain ore spawning over 100 intervals");
@@ -177,6 +189,143 @@ public final class CompatRuntimeTests {
         SpawnerConfig.ENABLED.set(false);
         naturalPassiveSpawning(level);
         naturalVanillaSlime(level);
+    }
+
+    private static void standardSpawnWeights(ServerLevel level) throws Exception {
+        check(SpawnerConfig.STANDARD_WEIGHT_SCALE.get() == 0.01, "default standard weight scale");
+        var plains = level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS);
+        var original = plains.value().modifiableBiomeInfo().getOriginalBiomeInfo();
+        var baseline = net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo.Builder.copyOf(original);
+        var expectedOre = new java.util.LinkedHashMap<EntityType<?>, net.minecraft.util.random.Weighted<net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData>>();
+        try (var stream = CompatRuntimeTests.class.getClassLoader().getResourceAsStream(
+                "data/oreslimes/neoforge/biome_modifier/add_ore_slime_spawns.json")) {
+            check(stream != null, "upstream spawn registration resource is available");
+            var json = com.google.gson.JsonParser.parseReader(new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8)).getAsJsonObject();
+            for (var value : json.getAsJsonArray("spawners")) {
+                var entry = value.getAsJsonObject();
+                var key = net.minecraft.resources.Identifier.parse(entry.get("type").getAsString());
+                var type = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getValue(key);
+                check(type != null, "upstream spawn type is registered: " + key);
+                var data = new net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData(type,
+                        entry.get("minCount").getAsInt(), entry.get("maxCount").getAsInt());
+                var weighted = new net.minecraft.util.random.Weighted<>(data, entry.get("weight").getAsInt());
+                baseline.getMobSpawnSettings().getSpawner(type.getCategory()).add(weighted);
+                if (key.getNamespace().equals("oreslimes")) expectedOre.put(type, weighted);
+            }
+        }
+        check(expectedOre.size() == 13, "upstream resource supplies all thirteen Ore types");
+        var live = plains.value().getMobSettings();
+        int total = 0;
+        for (var entry : expectedOre.entrySet()) {
+            var matches = live.getMobs(MobCategory.CREATURE).unwrap().stream()
+                    .filter(weighted -> weighted.value().type() == entry.getKey()).toList();
+            check(matches.size() == 1, "one live CREATURE entry for " + entry.getKey());
+            var actual = matches.getFirst();
+            check(entry.getKey().getCategory() == MobCategory.CREATURE, "Ore type retains CREATURE category");
+            check(actual.value().equals(entry.getValue().value()), "Ore type and group bounds match upstream");
+            check(actual.weight() == Math.max(1, (int) Math.round(entry.getValue().weight() * 0.01)),
+                    "live Ore weight matches configured scale");
+            total += actual.weight();
+        }
+        check(total == 88, "default rounded Ore weights total eighty-eight");
+        var originalSettings = baseline.build().mobSpawnSettings();
+        for (var category : MobCategory.values()) {
+            var expectedOthers = originalSettings.getMobs(category).unwrap().stream()
+                    .filter(entry -> !expectedOre.containsKey(entry.value().type())).toList();
+            var actualOthers = live.getMobs(category).unwrap().stream()
+                    .filter(entry -> !expectedOre.containsKey(entry.value().type())).toList();
+            check(actualOthers.equals(expectedOthers), "non-Ore entries retain weight, group bounds and order in " + category);
+        }
+        check(live.getMobs(MobCategory.MONSTER).unwrap().stream()
+                        .anyMatch(entry -> entry.value().type() == EntityType.SLIME && entry.weight() == 500
+                                && entry.value().minCount() == 2 && entry.value().maxCount() == 4),
+                "upstream vanilla Slime addition retains its MONSTER weight and group bounds");
+        double savedScale = SpawnerConfig.STANDARD_WEIGHT_SCALE.get();
+        var modifier = new OreSlimeWeightModifier();
+        try {
+            SpawnerConfig.STANDARD_WEIGHT_SCALE.set(1.0);
+            var restored = net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo.Builder.copyOf(baseline.build());
+            modifier.modify(plains, net.neoforged.neoforge.common.world.BiomeModifier.Phase.MODIFY, restored);
+            for (var category : MobCategory.values()) {
+                check(restored.build().mobSpawnSettings().getMobs(category).unwrap().equals(originalSettings.getMobs(category).unwrap()),
+                        "scale one preserves full upstream entries in " + category);
+            }
+            SpawnerConfig.STANDARD_WEIGHT_SCALE.set(0.01);
+            var fresh = net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo.Builder.copyOf(baseline.build());
+            modifier.modify(plains, net.neoforged.neoforge.common.world.BiomeModifier.Phase.ADD, fresh);
+            check(fresh.build().mobSpawnSettings().getMobs(MobCategory.CREATURE).unwrap()
+                    .equals(originalSettings.getMobs(MobCategory.CREATURE).unwrap()), "weight modifier waits until MODIFY phase");
+            modifier.modify(plains, net.neoforged.neoforge.common.world.BiomeModifier.Phase.MODIFY, fresh);
+            check(fresh.build().mobSpawnSettings().getMobs(MobCategory.CREATURE).unwrap()
+                    .equals(live.getMobs(MobCategory.CREATURE).unwrap()), "fresh builder reproduces startup registry weights");
+            var creatures = fresh.getMobSpawnSettings().getSpawner(MobCategory.CREATURE);
+            creatures.removeIf(entry -> true);
+            var ore = expectedOre.keySet().iterator().next();
+            creatures.add(new net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData(ore, 1, 2), 0);
+            // Use an existing registered type: EntityType construction requires an unfrozen registry.
+            var foreignData = new net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData(EntityType.COW, 2, 7);
+            creatures.add(foreignData, 31);
+            modifier.modify(plains, net.neoforged.neoforge.common.world.BiomeModifier.Phase.MODIFY, fresh);
+            check(creatures.getList().getFirst().weight() == 0, "explicit zero Ore weight remains disabled");
+            check(creatures.getList().getLast().equals(new net.minecraft.util.random.Weighted<>(foreignData, 31)),
+                    "non-Ore CREATURE entry retains its custom weight and group bounds");
+        } finally {
+            SpawnerConfig.STANDARD_WEIGHT_SCALE.set(savedScale);
+        }
+        check(plains.value().getMobSettings() == live, "isolated builder probes leave the live registry unchanged");
+    }
+
+    private static void standardChunkRules(ServerLevel level) {
+        BlockPos slime = null, ordinary = null;
+        for (int x = 448; x <= 608; x += 16) for (int z = 448; z <= 608; z += 16) {
+            var candidate = new BlockPos(x + 8, 200, z + 8);
+            if (OreSlimeSpawnRules.isInSlimeChunk(level, candidate)) slime = candidate;
+            else ordinary = candidate;
+        }
+        check(slime != null && ordinary != null, "fixture includes slime and non-slime chunks on the same valid floor");
+        check(OreSlimeSpawnRules.canNaturallySpawn(level, EntitySpawnReason.NATURAL, slime, level.getRandom()),
+                "actual upstream natural predicate accepts a valid floor in a slime chunk");
+        check(!OreSlimeSpawnRules.canNaturallySpawn(level, EntitySpawnReason.NATURAL, ordinary, level.getRandom()),
+                "actual upstream natural predicate rejects a non-slime chunk");
+        check(!OreSlimeSpawnRules.canSpawnFromBackupSpawner(level, ordinary),
+                "optional backup predicate also rejects a non-slime chunk");
+    }
+
+    private static void spawnPolicies(ServerLevel level, net.minecraft.server.level.ServerPlayer player) throws Exception {
+        SpawnerConfig.CHANCE.set(1.0);
+        SpawnerConfig.ATTEMPTS.set(32);
+        SpawnerConfig.VANILLA.set(true);
+        SpawnerConfig.VANILLA_CHANCE.set(1.0);
+        for (var mode : java.util.List.of(SpawnerConfig.BackupSpawnerMode.DISABLED,
+                SpawnerConfig.BackupSpawnerMode.SUPERFLAT_ONLY)) {
+            SpawnerConfig.BACKUP_MODE.set(mode);
+            check(!SpawnerConfig.allowsBackup(level), mode + " blocks backup in normal Overworld");
+            for (int pass = 0; pass < 20; pass++) pass(level);
+            check(oreCount(level) == 0, mode + " blocks Ore Slime additions");
+            check(vanillaCount(level) == 0, mode + " blocks vanilla slime injection");
+            var slime = EntityType.SLIME.create(level, EntitySpawnReason.COMMAND);
+            slime.setSize(1, true);
+            slime.setPos(532, 200, 530);
+            slime.setTarget(player);
+            level.addFreshEntity(slime);
+            counter(9);
+            tick(level);
+            check(slime.getTarget() == null, mode + " retains ten-tick calming");
+            slime.discard();
+        }
+        var nether = level.getServer().getLevel(net.minecraft.world.level.Level.NETHER);
+        check(nether != null && !SpawnerConfig.allowsBackup(nether), "SUPERFLAT_ONLY rejects Nether noise generator");
+        SpawnerConfig.BACKUP_MODE.set(SpawnerConfig.BackupSpawnerMode.ALL_WORLDS);
+        check(SpawnerConfig.allowsBackup(level), "ALL_WORLDS restores normal-world backup eligibility");
+        check(SpawnerConfig.allowsBackup(nether), "ALL_WORLDS retains upstream dimension eligibility checks");
+        SpawnerConfig.ENABLED.set(false);
+        check(!SpawnerConfig.allowsBackup(level), "Phase 1 enabled switch remains authoritative");
+        SpawnerConfig.ENABLED.set(true);
+        SpawnerConfig.CHANCE.set(0.35);
+        SpawnerConfig.ATTEMPTS.set(4);
+        SpawnerConfig.VANILLA.set(false);
+        SpawnerConfig.VANILLA_CHANCE.set(0.02);
+        level.getRandom().setSeed(384731L);
     }
 
     private static void naturalVanillaSlime(ServerLevel level) {

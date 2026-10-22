@@ -1,5 +1,37 @@
 # 設計判断
 
+## 標準スポーンと補助経路
+
+Ore Slime の基本経路は、Ore Slimes 本体の Biome Modifier と SpawnRules による標準自然スポーンとする。
+Minecraft の `CREATURE` カテゴリで、他の動物と個体数上限を共有する。
+compat は、必要な環境で独自スポーナーを補助的に使えるようにする。
+
+標準経路では、Ore Slime 13種類の選択重みを `standardSpawnWeightScale` で調整する。
+初期値は `0.01`、許容範囲は `0.001`–`1.0` とする。
+各重みに倍率を掛けて四捨五入し、正の重みは最低1、元の重み0は0に保つ。
+全13種類を含む元の一覧では合計8990が88になる。`1.0` では元の重みを使う。
+標準経路で動物が選ばれる機会を広げるため、この倍率を採用する。
+
+`OreSlimeWeightModifier` を NeoForge の Biome Modifier として登録し、
+`MODIFY` フェーズで `CREATURE` の spawn list を処理する。
+対象は `ModEntities.ALL` に含まれる13種類の EntityType と一致する項目とし、
+項目の順序、EntityType、最小・最大群れサイズ、対象バイオームを保持する。
+ほかの生物の重み、カテゴリ、SpawnRules、AI、ドロップ、レシピ、能力値は元のままとする。
+通常 Slime の自然スポーン一覧復元にも、この倍率を適用せず重み500を維持する。
+
+`backupSpawnerMode` は `DISABLED`、`SUPERFLAT_ONLY`、`ALL_WORLDS` の3種類とする。
+初期値は `DISABLED` とし、補助経路は管理者が環境に応じて有効にする。
+Superflat の desert では補助経路を使わず Ore Slime と Rabbit の自然生成を確認した。
+採用値での通常地形と taiga の継続観測では、通常動物等が個体数枠を満たし、Ore Slime の自然生成は0体だった。
+通常generatorでの生成経路は、個体数をリセットする別の制御試験で確認した。
+出現頻度は地形と既存個体数にも左右されるため、実測条件と合わせて評価する。
+調査は [Phase 2 調査](phase2-investigation.md)、測定と採用理由は [Phase 2 結果](phase2-results.md) に記録する。
+
+`SUPERFLAT_ONLY` は、各 `ServerLevel` の実際の chunk generator が `FlatLevelSource` かどうかで判定する。
+ワールド名や Overworld の設定をほかのディメンションへ流用せず、Nether なども個別に判定する。
+`ALL_WORLDS` は全ディメンションで補助経路を許可し、その後の生成可否は upstream helper の条件に従う。
+この policy と Phase 1 の `enabled` を両方満たした場合に、独自 Ore/Vanilla Slime の追加へ進む。
+
 ## 対象と介入点
 
 Mixin の対象は `com.jeremiah.oreslimes.world.OreSlimeWorldSpawner` の1クラスに限定する。
@@ -9,7 +41,8 @@ EntityJoinLevelEvent では独自追加と通常追加の由来を識別でき�
 
 `onServerTick` の処理の組み立て（orchestration）を HEAD injection で置き換える。
 元の tickCounter を進め、全非 spectator player の `calmNearbyVanillaSlimes` を
-従来どおり10 ticksごとに呼ぶ。スポーン処理の周期だけを設定で変更可能にする。
+従来どおり10 ticksごとに呼ぶ。スポーン処理は policy で対象ディメンションを選び、設定した周期で実行する。
+calm 処理は policy によるスポーン判定より先に行うため、標準スポーンだけを使う場合も継続する。
 元の Ore/Vanilla spawn helper を shadow 呼び出しし、種の重み、サイズ、
 地面の許可、collision 判定を維持する。AI/EntityType 側は元の実装をそのまま使う。
 
@@ -41,6 +74,17 @@ Minecraft の公開 census getter のみを用い、global cap を
 本 Mod の独自補充には、公開 census と同 pass の追加成功数による上記の cap 判定を使う。
 
 ## 設定と互換性
+
+Phase 1 の `oreSlimeSpawner` セクションと低頻度の初期値を保持し、
+トップレベルに `backupSpawnerMode` を追加する。
+標準重みの倍率 `standardSpawnWeightScale` もトップレベルに追加する。
+既存の設定ファイルには新しい項目を初期値で補い、既存項目を保持する。
+この NeoForge 版では SERVER config のロード後に Biome Modifier が実行されるため、
+起動時の倍率を標準 spawn list に反映できる。倍率の変更はサーバー再起動で適用する。
+`ALL_WORLDS` を指定すると、Phase 1 の設定で補助経路を利用できる。
+元の頻度へ近づける設定例は [README](../README.md#元のスポーナーに近い設定) に示す。
+標準スポーンの重みも元へ戻す場合は `standardSpawnWeightScale = 1.0` を指定する。
+この場合も円環探索、近接プレイヤーの抽選共有、global cap の確認は compat の処理を使う。
 
 実サーバー試験で、upstream の `reduce_vanilla_slime_spawns` biome modifier が
 Overworld の通常 Slime を spawn list から削除していることが判明した。

@@ -1,4 +1,6 @@
 debugSpawner = false
+standardSpawnWeightScale = 0.01
+backupSpawnerMode = "DISABLED"
 
 [oreSlimeSpawner]
 enabled = true

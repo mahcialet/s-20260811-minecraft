@@ -41,12 +41,13 @@ public abstract class OreSlimeWorldSpawnerMixin {
                 && Math.floorMod(tickCounter, SpawnerConfig.INTERVAL.get()) == 0;
         if (!calm && !spawn) return;
         for (ServerLevel level : event.getServer().getAllLevels()) {
+            boolean spawnInLevel = spawn && SpawnerConfig.allowsBackup(level);
             var coverage = new ArrayList<Vec3>();
             int addedThisPass = 0;
             for (ServerPlayer player : level.players()) {
                 if (player.isSpectator()) continue;
                 if (calm) calmNearbyVanillaSlimes(level, player);
-                if (!spawn) continue;
+                if (!spawnInLevel) continue;
                 double separation = 2.0 * SpawnerConfig.countRadius();
                 boolean covered = coverage.stream().anyMatch(p -> {
                     double dx = p.x - player.getX(), dz = p.z - player.getZ();

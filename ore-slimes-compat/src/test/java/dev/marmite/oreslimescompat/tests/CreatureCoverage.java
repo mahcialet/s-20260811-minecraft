@@ -65,7 +65,8 @@ final class CreatureCoverage {
     private List<Habitat> habitats = HABITATS;
     private final String focus = System.getProperty("compat.coverageTarget", "");
     private final boolean compact = Boolean.getBoolean("compat.compactCoverage");
-    private final int surfaceY = compact ? -63 : 64;
+    private final boolean normalCoverage = Boolean.getBoolean("compat.normalCoverage");
+    private final int surfaceY = normalCoverage ? 199 : compact ? -63 : 64;
     private final int maxWaves = Integer.getInteger("compat.coverageMaxWaves", 2000);
     private final Gson gson = new Gson();
     private final Set<String> targets = new TreeSet<>();
@@ -96,6 +97,14 @@ final class CreatureCoverage {
             level = event.getServer().overworld();
             output = Files.newBufferedWriter(Path.of("creature-coverage.jsonl"));
             if (maxWaves < 1 || maxWaves > 2000) throw new IllegalArgumentException("coverageMaxWaves must be 1..2000");
+            if (normalCoverage && (compact || focus.isEmpty())) {
+                throw new IllegalArgumentException("Normal-generator controlled coverage requires one focused Ore type and a raised floor");
+            }
+            if (normalCoverage && (!(level.getChunkSource().getGenerator() instanceof net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator)
+                    || SpawnerConfig.BACKUP_MODE.get() != SpawnerConfig.BackupSpawnerMode.DISABLED
+                    || SpawnerConfig.STANDARD_WEIGHT_SCALE.get() != 0.01)) {
+                throw new IllegalStateException("Normal-generator controlled coverage requires NoiseBasedChunkGenerator, DISABLED backup and 0.01 standard weight scale");
+            }
             if (compact && (focus.isEmpty() || focus.equals("minecraft:ocelot") || focus.equals("minecraft:strider"))) {
                 throw new IllegalArgumentException("Low-floor follow-up requires a target without the ocelot/nether height fixture");
             }
@@ -109,6 +118,7 @@ final class CreatureCoverage {
                 if (id.startsWith("oreslimes:") && type.getCategory() == MobCategory.CREATURE) oreTargets.add(id);
             }
             HABITATS.forEach(h -> targets.addAll(h.targets()));
+            if (normalCoverage && !oreTargets.contains(focus)) throw new IllegalArgumentException("Normal-generator controlled coverage target must be one registered Ore Slime type");
             targets.addAll(oreTargets);
             if (oreTargets.size() != 13 || targets.size() != 34) throw new IllegalStateException("Unexpected creature registry: " + targets);
             Set<String> registered = new TreeSet<>();
@@ -132,6 +142,12 @@ final class CreatureCoverage {
             write(Map.of("record", "inventory", "targets", targets, "specialRoutesExcluded", SPECIAL,
                     "maxWavesPerHabitat", maxWaves, "seed", level.getSeed(),
                     "limitation", "Controlled habitats; Strider uses a lava platform above the Nether roof. Wave-boundary removals release mob caps."));
+            if (normalCoverage) write(Map.of("record", "normalCoverageFixture", "normalCoverage", true,
+                    "generator", level.getChunkSource().getGenerator().getClass().getName(),
+                    "backupSpawnerMode", SpawnerConfig.BACKUP_MODE.get().name(),
+                    "standardSpawnWeightScale", SpawnerConfig.STANDARD_WEIGHT_SCALE.get(),
+                    "surfaceY", surfaceY,
+                    "scope", "Raised artificial grass habitat on a normal generator; ordinary tick spawning with population resets between waves. This proves a standard spawn path, not sustained natural-terrain abundance."));
             nextHabitat();
             event.getServer().setWeatherParameters(10_000_000, 0, false, false);
             event.getServer().tickRateManager().requestGameToSprint(10_000_000);
@@ -266,10 +282,17 @@ final class CreatureCoverage {
         Map<String, Object> result = new HashMap<>();
         result.put("targets", targets); result.put("focusedTarget", focus);
         result.put("overworldFloorY", surfaceY);
+        if (normalCoverage) {
+            result.put("normalCoverage", true);
+            result.put("generator", level.getChunkSource().getGenerator().getClass().getName());
+            result.put("backupSpawnerMode", SpawnerConfig.BACKUP_MODE.get().name());
+            result.put("standardSpawnWeightScale", SpawnerConfig.STANDARD_WEIGHT_SCALE.get());
+        }
         result.put("complete", complete); result.put("observed", observed); result.put("missing", missing);
         result.put("specialRoutesExcluded", SPECIAL); result.put("ticks", totalTicks);
         result.put("failure", failure == null ? "" : failure.toString());
         result.put("scope", "Controlled habitat natural-spawn coverage; caps released between waves; Strider uses a lava platform above the Nether roof.");
+        if (normalCoverage) result.put("scope", "Raised artificial grass habitat on a normal generator; ordinary tick spawning with population resets between waves. This proves a standard spawn path, not sustained natural-terrain abundance.");
         Files.writeString(Path.of("creature-coverage-result.json"), gson.toJson(result));
         write(result); output.close();
         Files.writeString(Path.of("statistics-result.txt"), complete ? "COMPLETE\n" : "FAIL missing=" + missing + "\n");

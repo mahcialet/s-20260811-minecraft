@@ -78,8 +78,10 @@ final class CompatStatistics {
                 event.getServer().halt(false);
                 return;
             }
+            // Preserve the original Phase 1 observation protocol after the Phase 2 default changes.
+            SpawnerConfig.BACKUP_MODE.set(SpawnerConfig.BackupSpawnerMode.ALL_WORLDS);
             output = Files.newBufferedWriter(Path.of("statistics.jsonl"));
-            if (SpawnerConfig.INTERVAL.get() != 1200 || SpawnerConfig.MAX_NEARBY.get() != 3
+            if (SpawnerConfig.STANDARD_WEIGHT_SCALE.get() != 1.0 || SpawnerConfig.INTERVAL.get() != 1200 || SpawnerConfig.MAX_NEARBY.get() != 3
                     || SpawnerConfig.CHANCE.get() != 0.35 || SpawnerConfig.VANILLA.get()
                     || SpawnerConfig.ATTEMPTS.get() != 4 || SpawnerConfig.COUNT_RADIUS.get() != 72
                     || SpawnerConfig.MIN_DISTANCE.get() != 18 || SpawnerConfig.MAX_DISTANCE.get() != 52) {

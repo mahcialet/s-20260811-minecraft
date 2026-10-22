@@ -8,3 +8,6 @@
 /run-creature-coverage/
 /run-creature-followup/
 /run-creature-low-floor/
+/run-creature-normal-followup/
+
+/run-phase2-*/

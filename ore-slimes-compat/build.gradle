@@ -8,10 +8,34 @@ def creatureInventory = providers.gradleProperty('creatureInventory').map { it.t
 def creatureCoverage = providers.gradleProperty('creatureCoverage').map { it.toBoolean() }.getOrElse(false)
 def coverageTarget = providers.gradleProperty('coverageTarget').getOrElse('')
 def compactCoverage = providers.gradleProperty('compactCoverage').map { it.toBoolean() }.getOrElse(false)
+def normalCoverage = providers.gradleProperty('normalCoverage').map { it.toBoolean() }.getOrElse(false)
+if (normalCoverage && (!creatureCoverage || !coverageTarget.startsWith('oreslimes:') || compactCoverage)) {
+    throw new GradleException('normalCoverage requires creatureCoverage and an Ore target, without compactCoverage')
+}
 if ((coverageTarget && !creatureCoverage) || (compactCoverage && (!creatureCoverage || !coverageTarget))) {
     throw new GradleException('coverageTarget requires creatureCoverage; compactCoverage also requires a target')
 }
-def statisticsDirectory = creatureCoverage ? (compactCoverage ? 'run-creature-low-floor' : coverageTarget ? 'run-creature-followup' : 'run-creature-coverage') : creatureInventory ? 'run-creature-inventory' : observeCows ? 'run-cows' : 'run-statistics'
+def statisticsDirectory = normalCoverage ? 'run-creature-normal-followup' : creatureCoverage ? (compactCoverage ? 'run-creature-low-floor' : coverageTarget ? 'run-creature-followup' : 'run-creature-coverage') : creatureInventory ? 'run-creature-inventory' : observeCows ? 'run-cows' : 'run-statistics'
+def phase2Profile = providers.gradleProperty('phase2Profile').getOrElse('phase2')
+def phase2Terrain = providers.gradleProperty('phase2Terrain').getOrElse('normal')
+def phase2Players = providers.gradleProperty('phase2Players').getOrElse('1')
+def phase2FlatBiome = providers.gradleProperty('phase2FlatBiome').getOrElse('taiga')
+if (!(phase2FlatBiome in ['taiga', 'desert', 'plains']) || (phase2Terrain != 'flat' && phase2FlatBiome != 'taiga')) {
+    throw new GradleException('phase2FlatBiome requires flat terrain and taiga|desert|plains')
+}
+if (!(phase2Profile in ['upstream', 'phase1', 'phase2']) || !(phase2Terrain in ['normal', 'flat']) || !(phase2Players in ['1', '2'])) {
+    throw new GradleException('Phase 2 requires profile upstream|phase1|phase2, terrain normal|flat, and players 1|2')
+}
+def phase2WeightScale = providers.gradleProperty('phase2WeightScale').getOrElse(phase2Profile == 'phase2' ? 'balanced' : 'original')
+if (!(phase2WeightScale in ['original', 'balanced', 'equal-all', 'equal-ore']) || (phase2Profile != 'phase2' && phase2WeightScale != 'original')) {
+    throw new GradleException('phase2WeightScale requires original|balanced|equal-all|equal-ore; experiments require phase2')
+}
+def phase2Trial = providers.gradleProperty('phase2Trial').map { it.toInteger() }.getOrElse(0)
+if (phase2Trial < 0 || phase2Trial > 20 || (phase2Trial > 0 && (phase2Profile != 'phase2' || phase2Players != '1' || phase2WeightScale == 'original'))) {
+    throw new GradleException('phase2Trial requires 1..20, phase2 profile, one player and a comparison weight variant')
+}
+def phase2Seed = 384731L + Math.max(0, phase2Trial - 1) * 104729L
+def phase2Directory = "run-phase2-${phase2Profile}-${phase2Terrain}${phase2FlatBiome == 'taiga' ? '' : '-' + phase2FlatBiome}-${phase2Players}" + (phase2WeightScale == 'original' ? '' : '-' + phase2WeightScale) + (phase2Trial > 0 ? '-trial' + String.format('%02d', phase2Trial) : '')
 version = '1.0.0'
 base { archivesName = 'ore-slimes-compat' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
@@ -33,6 +57,19 @@ neoForge {
             sourceSet = sourceSets.test
             loadedMods = [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
         }
+        phase2Server {
+            server()
+            gameDirectory = project.file(phase2Directory)
+            programArgument '--nogui'
+            systemProperty 'compat.phase2', 'true'
+            systemProperty 'compat.phase2.profile', phase2Profile
+            systemProperty 'compat.phase2.terrain', phase2Terrain
+            systemProperty 'compat.phase2.players', phase2Players
+            systemProperty 'compat.phase2.weightScale', phase2WeightScale
+            systemProperty 'compat.phase2.trial', phase2Trial.toString()
+            sourceSet = sourceSets.test
+            loadedMods = phase2Profile == 'upstream' ? [mods.ore_slimes_compat_tests] : [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
+        }
         compatStatisticsServer {
             server()
             gameDirectory = project.file(statisticsDirectory)
@@ -43,6 +80,7 @@ neoForge {
             systemProperty 'compat.creatureCoverage', creatureCoverage.toString()
             systemProperty 'compat.coverageTarget', coverageTarget
             systemProperty 'compat.compactCoverage', compactCoverage.toString()
+            systemProperty 'compat.normalCoverage', normalCoverage.toString()
             sourceSet = sourceSets.test
             loadedMods = [mods.ore_slimes_compat, mods.ore_slimes_compat_tests]
         }
@@ -85,6 +123,13 @@ tasks.register('prepareCompatStatistics') {
         def directory = file(statisticsDirectory)
         directory.mkdirs()
         delete new File(directory, 'statistics-result.txt')
+        if (!creatureCoverage && !creatureInventory) {
+            def configDirectory = new File(directory, 'config')
+            configDirectory.mkdirs()
+            new File(configDirectory, 'ore_slimes_compat-server.toml').text = file('config/ore_slimes_compat-server.toml').text
+                    .replace('backupSpawnerMode = "DISABLED"', 'backupSpawnerMode = "ALL_WORLDS"')
+                    .replace('standardSpawnWeightScale = 0.01', 'standardSpawnWeightScale = 1.0')
+        }
         new File(directory, 'server.properties').text = '''server-ip=127.0.0.1
 server-port=0
 online-mode=false
@@ -102,6 +147,14 @@ generator-settings={"biome":"minecraft:plains","layers":[{"block":"minecraft:bed
             def properties = new File(directory, 'server.properties')
             properties.text = properties.text.replace(',{"block":"minecraft:dirt","height":127}', '')
         }
+        if (normalCoverage) {
+            def properties = new File(directory, 'server.properties')
+            properties.text = properties.text.replace('level-type=minecraft:flat', 'level-type=minecraft:normal')
+                    .readLines().findAll { !it.startsWith('generator-settings=') }.join('\n') + '\n'
+            def configDirectory = new File(directory, 'config')
+            configDirectory.mkdirs()
+            new File(configDirectory, 'ore_slimes_compat-server.toml').text = file('config/ore_slimes_compat-server.toml').text
+        }
     }
 }
 tasks.named('runCompatStatisticsServer').configure {
@@ -110,6 +163,46 @@ tasks.named('runCompatStatisticsServer').configure {
         def result = file("${statisticsDirectory}/statistics-result.txt")
         if (!result.isFile() || result.text.trim() != 'COMPLETE') {
             throw new GradleException("Statistics failed; see ${statisticsDirectory}/logs/latest.log")
+        }
+    }
+}
+
+// Each comparison uses a fresh world and its own directory, so result files identify one profile.
+tasks.register('preparePhase2') {
+    doLast {
+        def directory = file(phase2Directory)
+        directory.mkdirs()
+        delete new File(directory, 'phase2-result.txt')
+        new File(directory, 'server.properties').text = """server-ip=127.0.0.1
+server-port=0
+online-mode=false
+enable-query=false
+enable-rcon=false
+view-distance=8
+simulation-distance=8
+pause-when-empty-seconds=0
+spawn-protection=0
+level-seed=${phase2Seed}
+difficulty=normal
+level-type=${phase2Terrain == 'flat' ? 'minecraft:flat' : 'minecraft:normal'}
+level-name=world-${UUID.randomUUID()}
+"""
+        if (phase2Terrain == 'flat') {
+            new File(directory, 'server.properties').append('generator-settings=' + groovy.json.JsonOutput.toJson([biome: "minecraft:${phase2FlatBiome}", layers: [[block: 'minecraft:bedrock', height: 1], [block: 'minecraft:dirt', height: 127], [block: phase2FlatBiome == 'desert' ? 'minecraft:sand' : 'minecraft:grass_block', height: 1]], structures: [:]]) + '\n')
+        }
+        def configDirectory = new File(directory, 'config')
+        configDirectory.mkdirs()
+        new File(configDirectory, 'ore_slimes_compat-server.toml').text = file('config/ore_slimes_compat-server.toml').text
+                .replace('backupSpawnerMode = "DISABLED"', 'backupSpawnerMode = "' + (phase2Profile == 'phase1' ? 'ALL_WORLDS' : 'DISABLED') + '"')
+                .replace('standardSpawnWeightScale = 0.01', 'standardSpawnWeightScale = ' + (phase2WeightScale == 'balanced' ? '0.01' : '1.0'))
+    }
+}
+tasks.named('runPhase2Server').configure {
+    dependsOn 'preparePhase2'
+    doLast {
+        def result = file("${phase2Directory}/phase2-result.txt")
+        if (!result.isFile() || result.text.trim() != 'COMPLETE') {
+            throw new GradleException("Phase 2 measurement failed; see ${phase2Directory}/logs/latest.log")
         }
     }
 }
